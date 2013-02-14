@@ -1,7 +1,7 @@
 Datenizer
 =========
 
-Datenizer is a simple jQuery datepicker that try to no suck so much.
+Datenizer is a simple jQuery datepicker that try to not suck so much.
 
 
 Usage
@@ -10,17 +10,21 @@ Usage
 ### Via data-attributes
 
 Use with default options:
+
     <input name="date" type="text" data-datepicker="datenizer" />
 
 Or customize:
+
     <input name="date" type="text" data-datepicker="datenizer" data-format="%d/%m/%Y" />
 
 ### Via javascript
 
 Use with default options:
+
     $(".datepicker").datenizer();
 
 Or customize:
+
     $(".datepicker").datenizer({
         format: "%d/%m/%Y"
     });
