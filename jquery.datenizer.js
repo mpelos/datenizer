@@ -87,25 +87,10 @@
     };
 
     DateSupport.prototype.daysAgo = function(n) {
-      var day, daysInMonth, daysPerLoop, i, loopCount, month, subtractDays, year, _i;
-      year = this.current.getFullYear();
-      month = this.current.getMonth();
-      day = this.current.getDate() - n;
-      daysPerLoop = 28;
-      loopCount = day === 0 ? 1 : Math.ceil(-day / 28);
-      for (i = _i = 1; 1 <= loopCount ? _i <= loopCount : _i >= loopCount; i = 1 <= loopCount ? ++_i : --_i) {
-        subtractDays = day <= daysPerLoop ? day : -daysPerLoop;
-        if (subtractDays < 1) {
-          month -= 1;
-          if (month < 0) {
-            year -= 1;
-            month = 11;
-          }
-          daysInMonth = new DateSupport(new Date(year, month)).daysInMonth();
-          day = daysInMonth + subtractDays;
-        }
-      }
-      return new Date(year, month, day);
+      var dateInMiliseconds, daysInMiliseconds;
+      daysInMiliseconds = n * 24 * 60 * 60 * 1000;
+      dateInMiliseconds = Date.parse(this.current.toString());
+      return new Date(dateInMiliseconds - daysInMiliseconds);
     };
 
     return DateSupport;
@@ -125,7 +110,9 @@
       }
     };
     $.datenizer.currentLocale = $.datenizer._defaultLocale;
-    return $.fn.datenizer = function() {};
+    return $.fn.datenizer = function() {
+      return new Calendar;
+    };
   });
 
 }).call(this);
