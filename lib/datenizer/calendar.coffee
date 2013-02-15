@@ -12,6 +12,7 @@ class Calendar
     @renderMonthName()
     @renderTable()
     @renderDays()
+    @twitterBootstrapStyle()
 
     @element
 
@@ -23,7 +24,7 @@ class Calendar
 
   renderTable: ->
     table = """
-      <table class="calendar">
+      <table class="calendar" style="text-align: center">
         <tr>
           <th>#{@locale().abbrDayNames[0]}</th>
           <th>#{@locale().abbrDayNames[1]}</th>
@@ -49,15 +50,41 @@ class Calendar
 
     for n in [0..totalDaysShown - 1]
       day = n - daysBefore + 1
+      daysInMonth = new DateSupport(startDate).daysInMonth()
+      otherMonth = false
 
-      if day < 1
-        day = new DateSupport(startDate).daysAgo(daysBefore - n).getDate()
-      else if day > new DateSupport(startDate).daysInMonth()
-        day = day - new DateSupport(startDate).daysInMonth()
+      if day < 1 or day > daysInMonth
+        otherMonth = true
+
+        day = if day < 1
+          new DateSupport(startDate).daysAgo(daysBefore - n).getDate()
+        else if day > daysInMonth
+          day - daysInMonth
 
       if n % daysPerWeek is 0
         @element.children(".calendar").append("<tr></tr>")
 
-      @element.find(".calendar tr:last").append("<td>#{day}</td>")
+      @element.find(".calendar tr:last")
+        .append("<td class='day#{if otherMonth then " other-month" else ""}'>#{day}</td>")
+
+    @element
+
+  twitterBootstrapStyle: ->
+    # style wrapper
+    @element.addClass("dropdown-menu")
+      .css
+        minWidth: "auto"
+        padding: "10px"
+        position: "static"
+      .show()
+
+    # style header
+    @element.find(".header").css
+      margin: "0 0 5px 0"
+      textAlign: "center"
+
+    # style cells
+    @element.find("th, td").css("padding", "5px")
+    @element.find(".other-month.day").addClass("muted")
 
     @element

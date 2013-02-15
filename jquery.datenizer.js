@@ -20,6 +20,7 @@
       this.renderMonthName();
       this.renderTable();
       this.renderDays();
+      this.twitterBootstrapStyle();
       return this.element;
     };
 
@@ -33,12 +34,12 @@
 
     Calendar.prototype.renderTable = function() {
       var table;
-      table = "<table class=\"calendar\">\n  <tr>\n    <th>" + (this.locale().abbrDayNames[0]) + "</th>\n    <th>" + (this.locale().abbrDayNames[1]) + "</th>\n    <th>" + (this.locale().abbrDayNames[2]) + "</th>\n    <th>" + (this.locale().abbrDayNames[3]) + "</th>\n    <th>" + (this.locale().abbrDayNames[4]) + "</th>\n    <th>" + (this.locale().abbrDayNames[5]) + "</th>\n    <th>" + (this.locale().abbrDayNames[6]) + "</th>\n  </tr>\n</table>";
+      table = "<table class=\"calendar\" style=\"text-align: center\">\n  <tr>\n    <th>" + (this.locale().abbrDayNames[0]) + "</th>\n    <th>" + (this.locale().abbrDayNames[1]) + "</th>\n    <th>" + (this.locale().abbrDayNames[2]) + "</th>\n    <th>" + (this.locale().abbrDayNames[3]) + "</th>\n    <th>" + (this.locale().abbrDayNames[4]) + "</th>\n    <th>" + (this.locale().abbrDayNames[5]) + "</th>\n    <th>" + (this.locale().abbrDayNames[6]) + "</th>\n  </tr>\n</table>";
       return this.element.append(table);
     };
 
     Calendar.prototype.renderDays = function() {
-      var day, daysAfter, daysBefore, daysPerWeek, n, startDate, totalDays, totalDaysShown, _i, _ref;
+      var day, daysAfter, daysBefore, daysInMonth, daysPerWeek, n, otherMonth, startDate, totalDays, totalDaysShown, _i, _ref;
       startDate = new DateSupport(this.currentDate).beginningOfMonth();
       totalDays = new DateSupport(this.currentDate).endOfMonth().getDate();
       daysBefore = startDate.getDay();
@@ -47,16 +48,32 @@
       daysAfter = totalDaysShown - (totalDays + daysBefore);
       for (n = _i = 0, _ref = totalDaysShown - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; n = 0 <= _ref ? ++_i : --_i) {
         day = n - daysBefore + 1;
-        if (day < 1) {
-          day = new DateSupport(startDate).daysAgo(daysBefore - n).getDate();
-        } else if (day > new DateSupport(startDate).daysInMonth()) {
-          day = day - new DateSupport(startDate).daysInMonth();
+        daysInMonth = new DateSupport(startDate).daysInMonth();
+        otherMonth = false;
+        if (day < 1 || day > daysInMonth) {
+          otherMonth = true;
+          day = day < 1 ? new DateSupport(startDate).daysAgo(daysBefore - n).getDate() : day > daysInMonth ? day - daysInMonth : void 0;
         }
         if (n % daysPerWeek === 0) {
           this.element.children(".calendar").append("<tr></tr>");
         }
-        this.element.find(".calendar tr:last").append("<td>" + day + "</td>");
+        this.element.find(".calendar tr:last").append("<td class='day" + (otherMonth ? " other-month" : "") + "'>" + day + "</td>");
       }
+      return this.element;
+    };
+
+    Calendar.prototype.twitterBootstrapStyle = function() {
+      this.element.addClass("dropdown-menu").css({
+        minWidth: "auto",
+        padding: "10px",
+        position: "static"
+      }).show();
+      this.element.find(".header").css({
+        margin: "0 0 5px 0",
+        textAlign: "center"
+      });
+      this.element.find("th, td").css("padding", "5px");
+      this.element.find(".other-month.day").addClass("muted");
       return this.element;
     };
 
