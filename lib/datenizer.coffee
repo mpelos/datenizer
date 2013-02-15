@@ -15,3 +15,4 @@ jQuery ($) ->
   $.datenizer.currentLocale = $.datenizer._defaultLocale
 
   $.fn.datenizer = ->
+    new Calendar
