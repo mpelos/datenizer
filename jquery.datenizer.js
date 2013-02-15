@@ -17,9 +17,18 @@
 
     Calendar.prototype.render = function() {
       this.element.empty();
+      this.renderMonthName();
       this.renderTable();
       this.renderDays();
       return this.element;
+    };
+
+    Calendar.prototype.renderMonthName = function() {
+      var month, monthName, year;
+      month = this.currentDate.getMonth();
+      monthName = this.locale().monthNames[month];
+      year = this.currentDate.getFullYear();
+      return this.element.append("<h5 class='header month'>" + monthName + " " + year + "</h5>");
     };
 
     Calendar.prototype.renderTable = function() {

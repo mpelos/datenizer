@@ -9,10 +9,17 @@ class Calendar
 
   render: ->
     @element.empty()
+    @renderMonthName()
     @renderTable()
     @renderDays()
 
     @element
+
+  renderMonthName: ->
+    month = @currentDate.getMonth()
+    monthName = @locale().monthNames[month]
+    year = @currentDate.getFullYear()
+    @element.append("<h5 class='header month'>#{monthName} #{year}</h5>")
 
   renderTable: ->
     table = """
