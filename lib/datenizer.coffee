@@ -7,7 +7,7 @@ jQuery ($) ->
         'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
         'Friday', 'Saturday']
-      abbrDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      abbrDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
     setLocale: (locale) ->
       @currentLocale = @locale[locale]

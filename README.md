@@ -136,13 +136,13 @@ After define the new locale you have to set it.
         ],
 
         abbrDayNames: [
-            'Sun',
-            'Mon',
-            'Tue',
-            'Wed',
-            'Thu',
-            'Fri',
-            'Sat'
+            'Su',
+            'Mo',
+            'Tu',
+            'We',
+            'Th',
+            'Fr',
+            'Sa'
         ]
     }
 
