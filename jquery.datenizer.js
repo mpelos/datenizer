@@ -39,7 +39,7 @@
     };
 
     Calendar.prototype.renderDays = function() {
-      var day, daysAfter, daysBefore, daysInMonth, daysPerWeek, n, otherMonth, startDate, totalDays, totalDaysShown, _i, _ref;
+      var classNames, currentDate, day, daysAfter, daysBefore, daysInMonth, daysPerWeek, loopDate, n, startDate, totalDays, totalDaysShown, _i, _ref;
       startDate = new DateSupport(this.currentDate).beginningOfMonth();
       totalDays = new DateSupport(this.currentDate).endOfMonth().getDate();
       daysBefore = startDate.getDay();
@@ -49,15 +49,25 @@
       for (n = _i = 0, _ref = totalDaysShown - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; n = 0 <= _ref ? ++_i : --_i) {
         day = n - daysBefore + 1;
         daysInMonth = new DateSupport(startDate).daysInMonth();
-        otherMonth = false;
+        currentDate = new Date(startDate.getFullYear(), startDate.getMonth(), day);
+        loopDate = currentDate;
         if (day < 1 || day > daysInMonth) {
-          otherMonth = true;
-          day = day < 1 ? new DateSupport(startDate).daysAgo(daysBefore - n).getDate() : day > daysInMonth ? day - daysInMonth : void 0;
+          loopDate = day < 1 ? new DateSupport(startDate).daysAgo(daysBefore - n) : new DateSupport(startDate).daysFromNow(n - daysBefore + 1);
         }
         if (n % daysPerWeek === 0) {
           this.element.children(".calendar").append("<tr></tr>");
         }
-        this.element.find(".calendar tr:last").append("<td class='day" + (otherMonth ? " other-month" : "") + "'>" + day + "</td>");
+        classNames = "day ";
+        if (loopDate.getMonth() !== startDate.getMonth()) {
+          classNames += "other-month ";
+        }
+        if (new DateSupport(loopDate).isToday()) {
+          classNames += "today ";
+        }
+        if (new DateSupport(this.selectedDate).equals(currentDate)) {
+          classNames += "selected ";
+        }
+        this.element.find(".calendar tr:last").append("<td><a href='#' class='" + classNames + "'>" + (loopDate.getDate()) + "</a></td>");
       }
       return this.element;
     };
@@ -72,8 +82,13 @@
         margin: "0 0 5px 0",
         textAlign: "center"
       });
-      this.element.find("th, td").css("padding", "5px");
+      this.element.find("th a, td a").css({
+        display: "inline-block",
+        padding: "5px"
+      });
       this.element.find(".other-month.day").addClass("muted");
+      this.element.find(".selected").addClass("btn btn-primary");
+      this.element.find("td a:not(.muted, .btn)").css("color", "rgb(51, 51, 51)");
       return this.element;
     };
 
@@ -85,7 +100,20 @@
 
     function DateSupport(current) {
       this.current = current != null ? current : new Date;
+      this.current = new Date(this.current.getFullYear(), this.current.getMonth(), this.current.getDate());
     }
+
+    DateSupport.prototype.toDate = function() {
+      return this.current;
+    };
+
+    DateSupport.prototype.toString = function() {
+      return this.current.toString();
+    };
+
+    DateSupport.prototype.equals = function(otherDate) {
+      return this.current.toString() === new DateSupport(otherDate).toString();
+    };
 
     DateSupport.prototype.isLeapYear = function() {
       var year;
@@ -112,11 +140,28 @@
       return [31, (this.isLeapYear() ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][this.current.getMonth()];
     };
 
+    DateSupport.prototype.dayInMiliseconds = function() {
+      return 24 * 60 * 60 * 1000;
+    };
+
+    DateSupport.prototype.dateInMiliseconds = function() {
+      return Date.parse(this.current.toString());
+    };
+
     DateSupport.prototype.daysAgo = function(n) {
-      var dateInMiliseconds, daysInMiliseconds;
-      daysInMiliseconds = n * 24 * 60 * 60 * 1000;
-      dateInMiliseconds = Date.parse(this.current.toString());
-      return new Date(dateInMiliseconds - daysInMiliseconds);
+      var daysInMiliseconds;
+      daysInMiliseconds = n * this.dayInMiliseconds();
+      return new Date(this.dateInMiliseconds() - daysInMiliseconds);
+    };
+
+    DateSupport.prototype.daysFromNow = function(n) {
+      var daysInMiliseconds;
+      daysInMiliseconds = n * this.dayInMiliseconds();
+      return new Date(this.dateInMiliseconds() + daysInMiliseconds);
+    };
+
+    DateSupport.prototype.isToday = function() {
+      return new DateSupport(this.current).equals(new Date);
     };
 
     return DateSupport;

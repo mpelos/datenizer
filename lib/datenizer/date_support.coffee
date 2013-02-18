@@ -1,5 +1,16 @@
 class DateSupport
   constructor: (@current = new Date) ->
+    # ignore time
+    @current = new Date(@current.getFullYear(), @current.getMonth(), @current.getDate())
+
+  toDate: ->
+    @current
+
+  toString: ->
+    @current.toString()
+
+  equals: (otherDate) ->
+    @current.toString() == new DateSupport(otherDate).toString()
 
   isLeapYear: ->
     year = @current.getFullYear()
@@ -18,7 +29,19 @@ class DateSupport
   daysInMonth: ->
     [31, (if @isLeapYear() then 29 else 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][@current.getMonth()]
 
+  dayInMiliseconds: ->
+    24 * 60 * 60 * 1000
+
+  dateInMiliseconds: ->
+    Date.parse(@current.toString())
+
   daysAgo: (n) ->
-    daysInMiliseconds = n * 24 * 60 * 60 * 1000
-    dateInMiliseconds = Date.parse(@current.toString())
-    new Date(dateInMiliseconds - daysInMiliseconds)
+    daysInMiliseconds = n * @dayInMiliseconds()
+    new Date(@dateInMiliseconds() - daysInMiliseconds)
+
+  daysFromNow: (n) ->
+    daysInMiliseconds = n * @dayInMiliseconds()
+    new Date(@dateInMiliseconds() + daysInMiliseconds)
+
+  isToday: ->
+    new DateSupport(@current).equals(new Date)

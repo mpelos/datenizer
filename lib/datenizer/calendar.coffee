@@ -51,21 +51,25 @@ class Calendar
     for n in [0..totalDaysShown - 1]
       day = n - daysBefore + 1
       daysInMonth = new DateSupport(startDate).daysInMonth()
-      otherMonth = false
+      currentDate = new Date(startDate.getFullYear(), startDate.getMonth(), day)
+      loopDate = currentDate
 
       if day < 1 or day > daysInMonth
-        otherMonth = true
-
-        day = if day < 1
-          new DateSupport(startDate).daysAgo(daysBefore - n).getDate()
-        else if day > daysInMonth
-          day - daysInMonth
+        loopDate = if day < 1
+                    new DateSupport(startDate).daysAgo(daysBefore - n)
+                  else
+                    new DateSupport(startDate).daysFromNow(n - daysBefore + 1)
 
       if n % daysPerWeek is 0
         @element.children(".calendar").append("<tr></tr>")
 
+      classNames = "day "
+      classNames += "other-month " if loopDate.getMonth() isnt startDate.getMonth()
+      classNames += "today "       if new DateSupport(loopDate).isToday()
+      classNames += "selected "    if new DateSupport(@selectedDate).equals(currentDate)
+
       @element.find(".calendar tr:last")
-        .append("<td class='day#{if otherMonth then " other-month" else ""}'>#{day}</td>")
+        .append("<td><a href='#' class='#{classNames}'>#{loopDate.getDate()}</a></td>")
 
     @element
 
@@ -84,7 +88,12 @@ class Calendar
       textAlign: "center"
 
     # style cells
-    @element.find("th, td").css("padding", "5px")
+    @element.find("th a, td a").css
+      display: "inline-block"
+      padding: "5px"
+
     @element.find(".other-month.day").addClass("muted")
+    @element.find(".selected").addClass("btn btn-primary")
+    @element.find("td a:not(.muted, .btn)").css("color", "rgb(51, 51, 51)")
 
     @element
