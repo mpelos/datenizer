@@ -24,10 +24,6 @@ jQuery ($) ->
       top: @offset().top + @innerHeight() - 1
       left: @offset().left
 
-    @calendar.element.on "click", ".day", (e) =>
-      e.stopPropagation()
-      @trigger "change"
-
     @on "focus", (e) =>
       @calendar.element.show()
       @trigger "open"
@@ -38,6 +34,12 @@ jQuery ($) ->
 
     @on "click", (e) =>
       e.stopPropagation()
+
+    @calendar.element.on "click", (e) =>
+      e.stopPropagation()
+
+    @calendar.element.on "click", ".day", (e) =>
+      @trigger "change"
 
     $(document).click =>
       @calendar.element.hide()

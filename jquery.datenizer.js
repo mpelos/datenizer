@@ -259,10 +259,6 @@
         top: this.offset().top + this.innerHeight() - 1,
         left: this.offset().left
       });
-      this.calendar.element.on("click", ".day", function(e) {
-        e.stopPropagation();
-        return _this.trigger("change");
-      });
       this.on("focus", function(e) {
         _this.calendar.element.show();
         return _this.trigger("open");
@@ -273,6 +269,12 @@
       });
       this.on("click", function(e) {
         return e.stopPropagation();
+      });
+      this.calendar.element.on("click", function(e) {
+        return e.stopPropagation();
+      });
+      this.calendar.element.on("click", ".day", function(e) {
+        return _this.trigger("change");
       });
       return $(document).click(function() {
         return _this.calendar.element.hide();
