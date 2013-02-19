@@ -117,7 +117,7 @@
   })();
 
   DateSupport = (function() {
-    var dayInMiliseconds;
+    var blankPadNumber, dayInMiliseconds, zeroPadNumber;
 
     function DateSupport() {
       this.current = (function() {
@@ -173,6 +173,32 @@
         }
       }
       return date;
+    };
+
+    DateSupport.prototype.format = function(format, locale) {
+      var formatted, _ref, _ref1;
+      if (locale == null) {
+        locale = {};
+      }
+      if ((_ref = locale.monthNames) == null) {
+        locale.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      }
+      if ((_ref1 = locale.abbrMonthNames) == null) {
+        locale.abbrMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      }
+      formatted = format;
+      formatted = formatted.replace(/%Y/g, this.getFullYear());
+      formatted = formatted.replace(/%y/g, this.getFullYear().toString().slice(2, 4));
+      formatted = formatted.replace(/%m/g, zeroPadNumber(this.getMonth() + 1));
+      formatted = formatted.replace(/%_m/g, blankPadNumber(this.getMonth() + 1));
+      formatted = formatted.replace(/%-m/g, this.getMonth() + 1);
+      formatted = formatted.replace(/%B/g, locale.monthNames[this.getMonth()]);
+      formatted = formatted.replace(/%\^B/g, locale.monthNames[this.getMonth()].toUpperCase());
+      formatted = formatted.replace(/%b/g, locale.abbrMonthNames[this.getMonth()]);
+      formatted = formatted.replace(/%\^b/g, locale.abbrMonthNames[this.getMonth()].toUpperCase());
+      formatted = formatted.replace(/%d/g, zeroPadNumber(this.getDate()));
+      formatted = formatted.replace(/%-d/g, this.getDate());
+      return formatted = formatted.replace(/%e/g, blankPadNumber(this.getDate()));
     };
 
     DateSupport.prototype.getDay = function() {
@@ -233,12 +259,32 @@
       return 24 * 60 * 60 * 1000;
     };
 
+    zeroPadNumber = function(n) {
+      if (n < 10) {
+        return '0' + n;
+      } else {
+        return n;
+      }
+    };
+
+    blankPadNumber = function(n) {
+      if (n < 10) {
+        return ' ' + n;
+      } else {
+        return n;
+      }
+    };
+
     return DateSupport;
 
   })();
 
   jQuery(function($) {
     $.datenizer = {
+      defaults: {
+        format: "%Y-%m-%d",
+        submitISOFormat: false
+      },
       _defaultLocale: {
         monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         abbrMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -252,7 +298,7 @@
     $.datenizer.currentLocale = $.datenizer._defaultLocale;
     return $.fn.datenizer = function(options) {
       var _this = this;
-      options = $.extend($.datenizer.defaults, options);
+      this.options = $.extend($.datenizer.defaults, options);
       this.calendar = new Calendar;
       this.calendar.element.hide().css({
         position: "absolute",
@@ -274,6 +320,7 @@
         return e.stopPropagation();
       });
       this.calendar.element.on("click", ".day", function(e) {
+        _this.val(_this.calendar.selectedDate.format(_this.options.format, $.datenizer.defaultLocale));
         return _this.trigger("change");
       });
       return $(document).click(function() {

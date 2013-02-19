@@ -37,6 +37,40 @@ class DateSupport
 
     date
 
+  format: (format, locale = {}) ->
+    locale.monthNames ?= ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December']
+    locale.abbrMonthNames ?= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+        'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+    # %Y - Year (4 digits)
+    # %y - year (00..99)
+    # %m - Month of the year, zero-padded (01..12)
+    # %_m  blank-padded ( 1..12)
+    # %-m  no-padded (1..12)
+    # %B - The full month name ("January")
+    # %^B  uppercased ("JANUARY")
+    # %b - The abbreviated month name ("Jan")
+    # %^b  uppercased ("JAN")
+    # %h - Equivalent to %b
+    # %d - Day of the month, zero-padded (01..31)
+    # %-d  no-padded (1..31)
+    # %e - Day of the month, blank-padded ( 1..31)
+
+    formatted = format
+    formatted = formatted.replace /%Y/g, @getFullYear()
+    formatted = formatted.replace /%y/g, @getFullYear().toString()[2..3]
+    formatted = formatted.replace /%m/g, zeroPadNumber(@getMonth() + 1)
+    formatted = formatted.replace /%_m/g, blankPadNumber(@getMonth() + 1)
+    formatted = formatted.replace /%-m/g, @getMonth() + 1
+    formatted = formatted.replace /%B/g, locale.monthNames[@getMonth()]
+    formatted = formatted.replace /%\^B/g, locale.monthNames[@getMonth()].toUpperCase()
+    formatted = formatted.replace /%b/g, locale.abbrMonthNames[@getMonth()]
+    formatted = formatted.replace /%\^b/g, locale.abbrMonthNames[@getMonth()].toUpperCase()
+    formatted = formatted.replace /%d/g, zeroPadNumber(@getDate())
+    formatted = formatted.replace /%-d/g, @getDate()
+    formatted = formatted.replace /%e/g, blankPadNumber(@getDate())
+
   getDay: ->
     @current.getDay()
 
@@ -80,3 +114,9 @@ class DateSupport
 
   dayInMiliseconds = ->
     24 * 60 * 60 * 1000
+
+  zeroPadNumber = (n) ->
+    if n < 10 then '0' + n else n
+
+  blankPadNumber = (n) ->
+    if n < 10 then ' ' + n else n

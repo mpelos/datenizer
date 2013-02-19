@@ -1,5 +1,9 @@
 jQuery ($) ->
   $.datenizer =
+    defaults:
+      format: "%Y-%m-%d"
+      submitISOFormat: false
+
     _defaultLocale:
       monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December']
@@ -15,7 +19,7 @@ jQuery ($) ->
   $.datenizer.currentLocale = $.datenizer._defaultLocale
 
   $.fn.datenizer = (options) ->
-    options = $.extend($.datenizer.defaults, options)
+    @options = $.extend($.datenizer.defaults, options)
 
     @calendar = new Calendar
 
@@ -39,6 +43,7 @@ jQuery ($) ->
       e.stopPropagation()
 
     @calendar.element.on "click", ".day", (e) =>
+      @val @calendar.selectedDate.format(@options.format, $.datenizer.defaultLocale)
       @trigger "change"
 
     $(document).click =>
