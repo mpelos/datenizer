@@ -299,6 +299,7 @@
     return $.fn.datenizer = function(options) {
       var _this = this;
       this.options = $.extend($.datenizer.defaults, options);
+      this.hiddenField = this.options.submitISOFormat ? this.after("<input type='hidden' name='" + (this.attr("name")) + "'>").next() : void 0;
       this.calendar = new Calendar;
       this.calendar.element.hide().css({
         position: "absolute",
@@ -320,7 +321,11 @@
         return e.stopPropagation();
       });
       this.calendar.element.on("click", ".day", function(e) {
+        var _ref;
         _this.val(_this.calendar.selectedDate.format(_this.options.format, $.datenizer.defaultLocale));
+        if ((_ref = _this.hiddenField) != null) {
+          _ref.val(_this.calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale));
+        }
         return _this.trigger("change");
       });
       return $(document).click(function() {

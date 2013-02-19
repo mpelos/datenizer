@@ -21,6 +21,9 @@ jQuery ($) ->
   $.fn.datenizer = (options) ->
     @options = $.extend($.datenizer.defaults, options)
 
+    @hiddenField = if @options.submitISOFormat
+                     @after("<input type='hidden' name='#{@attr("name")}'>").next()
+
     @calendar = new Calendar
 
     @calendar.element.hide().css
@@ -44,6 +47,7 @@ jQuery ($) ->
 
     @calendar.element.on "click", ".day", (e) =>
       @val @calendar.selectedDate.format(@options.format, $.datenizer.defaultLocale)
+      @hiddenField?.val @calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale)
       @trigger "change"
 
     $(document).click =>
