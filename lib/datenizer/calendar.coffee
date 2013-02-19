@@ -76,7 +76,7 @@ class Calendar
       classNames += " selected"    if @selectedDate.isEqual(currentDate)
 
       @element.find(".calendar tbody tr:last")
-        .append("<td><a href='#' class='#{classNames}'>#{loopDate.getDate()}</a></td>")
+        .append("<td><a href='#' class='#{classNames}' data-date='#{loopDate.dateInMiliseconds()}'>#{loopDate.getDate()}</a></td>")
 
     @element
 
@@ -119,4 +119,11 @@ class Calendar
     @element.on "click", ".next", this, (e) ->
       calendar = e.data
       calendar.currentDate = calendar.currentDate.nextMonth()
+      calendar.render()
+
+    @element.on "click", ".day", this, (e) ->
+      calendar = e.data
+      selectedDate = jQuery(e.currentTarget).data("date")
+      calendar.selectedDate = new DateSupport(selectedDate)
+      calendar.currentDate = calendar.selectedDate
       calendar.render()

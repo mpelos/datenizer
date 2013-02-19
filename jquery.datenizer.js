@@ -61,7 +61,7 @@
         if (this.selectedDate.isEqual(currentDate)) {
           classNames += " selected";
         }
-        this.element.find(".calendar tbody tr:last").append("<td><a href='#' class='" + classNames + "'>" + (loopDate.getDate()) + "</a></td>");
+        this.element.find(".calendar tbody tr:last").append("<td><a href='#' class='" + classNames + "' data-date='" + (loopDate.dateInMiliseconds()) + "'>" + (loopDate.getDate()) + "</a></td>");
       }
       return this.element;
     };
@@ -97,10 +97,18 @@
         calendar.currentDate = calendar.currentDate.previousMonth();
         return calendar.render();
       });
-      return this.element.on("click", ".next", this, function(e) {
+      this.element.on("click", ".next", this, function(e) {
         var calendar;
         calendar = e.data;
         calendar.currentDate = calendar.currentDate.nextMonth();
+        return calendar.render();
+      });
+      return this.element.on("click", ".day", this, function(e) {
+        var calendar, selectedDate;
+        calendar = e.data;
+        selectedDate = jQuery(e.currentTarget).data("date");
+        calendar.selectedDate = new DateSupport(selectedDate);
+        calendar.currentDate = calendar.selectedDate;
         return calendar.render();
       });
     };
