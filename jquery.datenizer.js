@@ -9,6 +9,7 @@
       this.currentDate = this.selectedDate;
       this.element = jQuery("body").append("<div class='datenizer'></div>").children(".datenizer:last");
       this.render();
+      this.insertEventListeners();
     }
 
     Calendar.prototype.locale = function() {
@@ -17,24 +18,17 @@
 
     Calendar.prototype.render = function() {
       this.element.empty();
-      this.renderMonthName();
       this.renderTable();
       this.renderDays();
       this.twitterBootstrapStyle();
       return this.element;
     };
 
-    Calendar.prototype.renderMonthName = function() {
-      var month, monthName, year;
-      month = this.currentDate.getMonth();
-      monthName = this.locale().monthNames[month];
-      year = this.currentDate.getFullYear();
-      return this.element.append("<h5 class='header month'>" + monthName + " " + year + "</h5>");
-    };
-
     Calendar.prototype.renderTable = function() {
-      var table;
-      table = "<table class=\"calendar\" style=\"text-align: center\">\n  <tr>\n    <th>" + (this.locale().abbrDayNames[0]) + "</th>\n    <th>" + (this.locale().abbrDayNames[1]) + "</th>\n    <th>" + (this.locale().abbrDayNames[2]) + "</th>\n    <th>" + (this.locale().abbrDayNames[3]) + "</th>\n    <th>" + (this.locale().abbrDayNames[4]) + "</th>\n    <th>" + (this.locale().abbrDayNames[5]) + "</th>\n    <th>" + (this.locale().abbrDayNames[6]) + "</th>\n  </tr>\n</table>";
+      var monthName, table, year;
+      monthName = this.locale().monthNames[this.currentDate.getMonth()];
+      year = this.currentDate.getFullYear();
+      table = "<table class=\"calendar\" style=\"text-align: center\">\n  <thead>\n    <tr>\n      <th><a href=\"#\" class=\"previous month\">«</a></th>\n      <th colspan=\"5\" class=\"month\"><h5>" + monthName + " " + year + "</h5></th>\n      <th><a href=\"#\" class=\"next month\">»</a></th>\n    </tr>\n\n    <tr>\n      <th>" + (this.locale().abbrDayNames[0]) + "</th>\n      <th>" + (this.locale().abbrDayNames[1]) + "</th>\n      <th>" + (this.locale().abbrDayNames[2]) + "</th>\n      <th>" + (this.locale().abbrDayNames[3]) + "</th>\n      <th>" + (this.locale().abbrDayNames[4]) + "</th>\n      <th>" + (this.locale().abbrDayNames[5]) + "</th>\n      <th>" + (this.locale().abbrDayNames[6]) + "</th>\n    </tr>\n  </thead>\n\n  <tbody></tbody>\n</table>";
       return this.element.append(table);
     };
 
@@ -67,7 +61,7 @@
         if (this.selectedDate.isEqual(currentDate)) {
           classNames += " selected";
         }
-        this.element.find(".calendar tr:last").append("<td><a href='#' class='" + classNames + "'>" + (loopDate.getDate()) + "</a></td>");
+        this.element.find(".calendar tbody tr:last").append("<td><a href='#' class='" + classNames + "'>" + (loopDate.getDate()) + "</a></td>");
       }
       return this.element;
     };
@@ -78,18 +72,37 @@
         padding: "10px",
         position: "static"
       }).show();
-      this.element.find(".header").css({
-        margin: "0 0 5px 0",
+      this.element.find(".calendar tr:first th").css({
+        marginBottom: "6px",
         textAlign: "center"
       });
+      this.element.find(".calendar .month h5").css("margin", 0);
       this.element.find("th a, td a").css({
         display: "inline-block",
         padding: "5px"
       });
       this.element.find(".other-month.day").addClass("muted");
       this.element.find(".selected").addClass("btn btn-primary");
-      this.element.find("td a:not(.muted, .btn)").css("color", "rgb(51, 51, 51)");
+      this.element.find("th a, td a:not(.muted, .btn)").css("color", "rgb(51, 51, 51)");
       return this.element;
+    };
+
+    Calendar.prototype.insertEventListeners = function() {
+      this.element.on("click", "a", function(e) {
+        return e.preventDefault();
+      });
+      this.element.on("click", ".previous", this, function(e) {
+        var calendar;
+        calendar = e.data;
+        calendar.currentDate = calendar.currentDate.previousMonth();
+        return calendar.render();
+      });
+      return this.element.on("click", ".next", this, function(e) {
+        var calendar;
+        calendar = e.data;
+        calendar.currentDate = calendar.currentDate.nextMonth();
+        return calendar.render();
+      });
     };
 
     return Calendar;
@@ -183,6 +196,26 @@
 
     DateSupport.prototype.isToday = function() {
       return this.isEqual(new Date);
+    };
+
+    DateSupport.prototype.monthsAgo = function(n) {
+      var daysInMiliseconds;
+      daysInMiliseconds = n * this.daysInMonth() * dayInMiliseconds();
+      return new DateSupport(this.dateInMiliseconds() - daysInMiliseconds);
+    };
+
+    DateSupport.prototype.monthsFromNow = function(n) {
+      var daysInMiliseconds;
+      daysInMiliseconds = n * this.daysInMonth() * dayInMiliseconds();
+      return new DateSupport(this.dateInMiliseconds() + daysInMiliseconds);
+    };
+
+    DateSupport.prototype.nextMonth = function() {
+      return this.monthsFromNow(1);
+    };
+
+    DateSupport.prototype.previousMonth = function() {
+      return this.monthsAgo(1);
     };
 
     DateSupport.prototype.toString = function() {

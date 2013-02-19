@@ -3,37 +3,44 @@ class Calendar
     @currentDate = @selectedDate
     @element = jQuery("body").append("<div class='datenizer'></div>").children(".datenizer:last")
     @render()
+    @insertEventListeners()
 
   locale: ->
     jQuery.datenizer.currentLocale
 
   render: ->
     @element.empty()
-    @renderMonthName()
     @renderTable()
     @renderDays()
     @twitterBootstrapStyle()
 
     @element
 
-  renderMonthName: ->
-    month = @currentDate.getMonth()
-    monthName = @locale().monthNames[month]
-    year = @currentDate.getFullYear()
-    @element.append("<h5 class='header month'>#{monthName} #{year}</h5>")
-
   renderTable: ->
+    monthName = @locale().monthNames[@currentDate.getMonth()]
+    year = @currentDate.getFullYear()
+
     table = """
       <table class="calendar" style="text-align: center">
-        <tr>
-          <th>#{@locale().abbrDayNames[0]}</th>
-          <th>#{@locale().abbrDayNames[1]}</th>
-          <th>#{@locale().abbrDayNames[2]}</th>
-          <th>#{@locale().abbrDayNames[3]}</th>
-          <th>#{@locale().abbrDayNames[4]}</th>
-          <th>#{@locale().abbrDayNames[5]}</th>
-          <th>#{@locale().abbrDayNames[6]}</th>
-        </tr>
+        <thead>
+          <tr>
+            <th><a href="#" class="previous month">«</a></th>
+            <th colspan="5" class="month"><h5>#{monthName} #{year}</h5></th>
+            <th><a href="#" class="next month">»</a></th>
+          </tr>
+
+          <tr>
+            <th>#{@locale().abbrDayNames[0]}</th>
+            <th>#{@locale().abbrDayNames[1]}</th>
+            <th>#{@locale().abbrDayNames[2]}</th>
+            <th>#{@locale().abbrDayNames[3]}</th>
+            <th>#{@locale().abbrDayNames[4]}</th>
+            <th>#{@locale().abbrDayNames[5]}</th>
+            <th>#{@locale().abbrDayNames[6]}</th>
+          </tr>
+        </thead>
+
+        <tbody></tbody>
       </table>
     """
 
@@ -68,7 +75,7 @@ class Calendar
       classNames += " today"       if loopDate.isToday()
       classNames += " selected"    if @selectedDate.isEqual(currentDate)
 
-      @element.find(".calendar tr:last")
+      @element.find(".calendar tbody tr:last")
         .append("<td><a href='#' class='#{classNames}'>#{loopDate.getDate()}</a></td>")
 
     @element
@@ -83,9 +90,11 @@ class Calendar
       .show()
 
     # style header
-    @element.find(".header").css
-      margin: "0 0 5px 0"
+    @element.find(".calendar tr:first th").css
+      marginBottom: "6px"
       textAlign: "center"
+
+    @element.find(".calendar .month h5").css("margin", 0)
 
     # style cells
     @element.find("th a, td a").css
@@ -94,6 +103,20 @@ class Calendar
 
     @element.find(".other-month.day").addClass("muted")
     @element.find(".selected").addClass("btn btn-primary")
-    @element.find("td a:not(.muted, .btn)").css("color", "rgb(51, 51, 51)")
+    @element.find("th a, td a:not(.muted, .btn)").css("color", "rgb(51, 51, 51)")
 
     @element
+
+  insertEventListeners: ->
+    @element.on "click", "a", (e) ->
+      e.preventDefault()
+
+    @element.on "click", ".previous", this, (e) ->
+      calendar = e.data
+      calendar.currentDate = calendar.currentDate.previousMonth()
+      calendar.render()
+
+    @element.on "click", ".next", this, (e) ->
+      calendar = e.data
+      calendar.currentDate = calendar.currentDate.nextMonth()
+      calendar.render()

@@ -59,6 +59,20 @@ class DateSupport
   isToday: ->
     @isEqual new Date
 
+  monthsAgo: (n) ->
+    daysInMiliseconds = n * @daysInMonth() * dayInMiliseconds()
+    new DateSupport @dateInMiliseconds() - daysInMiliseconds
+
+  monthsFromNow: (n) ->
+    daysInMiliseconds = n * @daysInMonth() * dayInMiliseconds()
+    new DateSupport @dateInMiliseconds() + daysInMiliseconds
+
+  nextMonth: ->
+    @monthsFromNow(1)
+
+  previousMonth: ->
+    @monthsAgo(1)
+
   toString: ->
     @current.toString()
 
@@ -66,4 +80,3 @@ class DateSupport
 
   dayInMiliseconds = ->
     24 * 60 * 60 * 1000
-
