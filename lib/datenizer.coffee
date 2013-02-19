@@ -14,5 +14,30 @@ jQuery ($) ->
 
   $.datenizer.currentLocale = $.datenizer._defaultLocale
 
-  $.fn.datenizer = ->
-    new Calendar
+  $.fn.datenizer = (options) ->
+    options = $.extend($.datenizer.defaults, options)
+
+    @calendar = new Calendar
+
+    @calendar.element.hide().css
+      position: "absolute"
+      top: @offset().top + @innerHeight() - 1
+      left: @offset().left
+
+    @calendar.element.on "click", ".day", (e) =>
+      e.stopPropagation()
+      @trigger "change"
+
+    @on "focus", (e) =>
+      @calendar.element.show()
+      @trigger "open"
+
+    @on "change", (e) =>
+      @calendar.element.hide()
+      @trigger "close"
+
+    @on "click", (e) =>
+      e.stopPropagation()
+
+    $(document).click =>
+      @calendar.element.hide()

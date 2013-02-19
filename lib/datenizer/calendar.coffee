@@ -86,7 +86,6 @@ class Calendar
       .css
         minWidth: "auto"
         padding: "10px"
-        position: "static"
       .show()
 
     # style header

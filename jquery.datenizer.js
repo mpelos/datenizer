@@ -69,8 +69,7 @@
     Calendar.prototype.twitterBootstrapStyle = function() {
       this.element.addClass("dropdown-menu").css({
         minWidth: "auto",
-        padding: "10px",
-        position: "static"
+        padding: "10px"
       }).show();
       this.element.find(".calendar tr:first th").css({
         marginBottom: "6px",
@@ -251,8 +250,33 @@
       }
     };
     $.datenizer.currentLocale = $.datenizer._defaultLocale;
-    return $.fn.datenizer = function() {
-      return new Calendar;
+    return $.fn.datenizer = function(options) {
+      var _this = this;
+      options = $.extend($.datenizer.defaults, options);
+      this.calendar = new Calendar;
+      this.calendar.element.hide().css({
+        position: "absolute",
+        top: this.offset().top + this.innerHeight() - 1,
+        left: this.offset().left
+      });
+      this.calendar.element.on("click", ".day", function(e) {
+        e.stopPropagation();
+        return _this.trigger("change");
+      });
+      this.on("focus", function(e) {
+        _this.calendar.element.show();
+        return _this.trigger("open");
+      });
+      this.on("change", function(e) {
+        _this.calendar.element.hide();
+        return _this.trigger("close");
+      });
+      this.on("click", function(e) {
+        return e.stopPropagation();
+      });
+      return $(document).click(function() {
+        return _this.calendar.element.hide();
+      });
     };
   });
 
