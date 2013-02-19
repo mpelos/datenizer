@@ -1,5 +1,5 @@
 class Calendar
-  constructor: (@selectedDate = new Date) ->
+  constructor: (@selectedDate = new DateSupport) ->
     @currentDate = @selectedDate
     @element = jQuery("body").append("<div class='datenizer'></div>").children(".datenizer:last")
     @render()
@@ -41,8 +41,8 @@ class Calendar
 
   renderDays: ->
     # calculate overflow
-    startDate = new DateSupport(@currentDate).beginningOfMonth()
-    totalDays = new DateSupport(@currentDate).endOfMonth().getDate()
+    startDate = @currentDate.beginningOfMonth()
+    totalDays = @currentDate.endOfMonth().getDate()
     daysBefore = startDate.getDay()
     daysPerWeek = 7
     totalDaysShown = daysPerWeek * Math.ceil((totalDays + daysBefore) / daysPerWeek)
@@ -50,23 +50,23 @@ class Calendar
 
     for n in [0..totalDaysShown - 1]
       day = n - daysBefore + 1
-      daysInMonth = new DateSupport(startDate).daysInMonth()
-      currentDate = new Date(startDate.getFullYear(), startDate.getMonth(), day)
+      daysInMonth = startDate.daysInMonth()
+      currentDate = new DateSupport(startDate.getFullYear(), startDate.getMonth(), day)
       loopDate = currentDate
 
       if day < 1 or day > daysInMonth
         loopDate = if day < 1
-                    new DateSupport(startDate).daysAgo(daysBefore - n)
+                    startDate.daysAgo(daysBefore - n)
                   else
-                    new DateSupport(startDate).daysFromNow(n - daysBefore + 1)
+                    startDate.daysFromNow(n - daysBefore + 1)
 
       if n % daysPerWeek is 0
         @element.children(".calendar").append("<tr></tr>")
 
-      classNames = "day "
-      classNames += "other-month " if loopDate.getMonth() isnt startDate.getMonth()
-      classNames += "today "       if new DateSupport(loopDate).isToday()
-      classNames += "selected "    if new DateSupport(@selectedDate).equals(currentDate)
+      classNames = "day"
+      classNames += " other-month" if loopDate.getMonth() isnt startDate.getMonth()
+      classNames += " today"       if loopDate.isToday()
+      classNames += " selected"    if @selectedDate.isEqual(currentDate)
 
       @element.find(".calendar tr:last")
         .append("<td><a href='#' class='#{classNames}'>#{loopDate.getDate()}</a></td>")

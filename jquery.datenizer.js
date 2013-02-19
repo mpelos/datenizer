@@ -5,7 +5,7 @@
   Calendar = (function() {
 
     function Calendar(selectedDate) {
-      this.selectedDate = selectedDate != null ? selectedDate : new Date;
+      this.selectedDate = selectedDate != null ? selectedDate : new DateSupport;
       this.currentDate = this.selectedDate;
       this.element = jQuery("body").append("<div class='datenizer'></div>").children(".datenizer:last");
       this.render();
@@ -40,32 +40,32 @@
 
     Calendar.prototype.renderDays = function() {
       var classNames, currentDate, day, daysAfter, daysBefore, daysInMonth, daysPerWeek, loopDate, n, startDate, totalDays, totalDaysShown, _i, _ref;
-      startDate = new DateSupport(this.currentDate).beginningOfMonth();
-      totalDays = new DateSupport(this.currentDate).endOfMonth().getDate();
+      startDate = this.currentDate.beginningOfMonth();
+      totalDays = this.currentDate.endOfMonth().getDate();
       daysBefore = startDate.getDay();
       daysPerWeek = 7;
       totalDaysShown = daysPerWeek * Math.ceil((totalDays + daysBefore) / daysPerWeek);
       daysAfter = totalDaysShown - (totalDays + daysBefore);
       for (n = _i = 0, _ref = totalDaysShown - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; n = 0 <= _ref ? ++_i : --_i) {
         day = n - daysBefore + 1;
-        daysInMonth = new DateSupport(startDate).daysInMonth();
-        currentDate = new Date(startDate.getFullYear(), startDate.getMonth(), day);
+        daysInMonth = startDate.daysInMonth();
+        currentDate = new DateSupport(startDate.getFullYear(), startDate.getMonth(), day);
         loopDate = currentDate;
         if (day < 1 || day > daysInMonth) {
-          loopDate = day < 1 ? new DateSupport(startDate).daysAgo(daysBefore - n) : new DateSupport(startDate).daysFromNow(n - daysBefore + 1);
+          loopDate = day < 1 ? startDate.daysAgo(daysBefore - n) : startDate.daysFromNow(n - daysBefore + 1);
         }
         if (n % daysPerWeek === 0) {
           this.element.children(".calendar").append("<tr></tr>");
         }
-        classNames = "day ";
+        classNames = "day";
         if (loopDate.getMonth() !== startDate.getMonth()) {
-          classNames += "other-month ";
+          classNames += " other-month";
         }
-        if (new DateSupport(loopDate).isToday()) {
-          classNames += "today ";
+        if (loopDate.isToday()) {
+          classNames += " today";
         }
-        if (new DateSupport(this.selectedDate).equals(currentDate)) {
-          classNames += "selected ";
+        if (this.selectedDate.isEqual(currentDate)) {
+          classNames += " selected";
         }
         this.element.find(".calendar tr:last").append("<td><a href='#' class='" + classNames + "'>" + (loopDate.getDate()) + "</a></td>");
       }
@@ -97,21 +97,81 @@
   })();
 
   DateSupport = (function() {
+    var dayInMiliseconds;
 
-    function DateSupport(current) {
-      this.current = current != null ? current : new Date;
+    function DateSupport() {
+      this.current = (function() {
+        switch (arguments.length) {
+          case 0:
+            return new Date;
+          case 1:
+            if (arguments[0] instanceof Date) {
+              return arguments[0];
+            } else {
+              return new Date(arguments[0]);
+            }
+            break;
+          case 2:
+            return new Date(arguments[0], arguments[1]);
+          case 3:
+            return new Date(arguments[0], arguments[1], arguments[2]);
+        }
+      }).apply(this, arguments);
       this.current = new Date(this.current.getFullYear(), this.current.getMonth(), this.current.getDate());
     }
 
-    DateSupport.prototype.toDate = function() {
-      return this.current;
+    DateSupport.prototype.beginningOfMonth = function() {
+      return new DateSupport(this.current.getFullYear(), this.current.getMonth());
     };
 
-    DateSupport.prototype.toString = function() {
-      return this.current.toString();
+    DateSupport.prototype.daysAgo = function(n) {
+      var daysInMiliseconds;
+      daysInMiliseconds = n * dayInMiliseconds();
+      return new DateSupport(this.dateInMiliseconds() - daysInMiliseconds);
     };
 
-    DateSupport.prototype.equals = function(otherDate) {
+    DateSupport.prototype.daysFromNow = function(n) {
+      var daysInMiliseconds;
+      daysInMiliseconds = n * dayInMiliseconds();
+      return new DateSupport(this.dateInMiliseconds() + daysInMiliseconds);
+    };
+
+    DateSupport.prototype.daysInMonth = function() {
+      return [31, (this.isLeapYear() ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][this.current.getMonth()];
+    };
+
+    DateSupport.prototype.dateInMiliseconds = function() {
+      return Date.parse(this.current.toString());
+    };
+
+    DateSupport.prototype.endOfMonth = function() {
+      var date, n, _i;
+      for (n = _i = 31; _i >= 28; n = --_i) {
+        date = new DateSupport(this.current.getFullYear(), this.current.getMonth(), n);
+        if (date.getMonth() === this.current.getMonth()) {
+          break;
+        }
+      }
+      return date;
+    };
+
+    DateSupport.prototype.getDay = function() {
+      return this.current.getDay();
+    };
+
+    DateSupport.prototype.getDate = function() {
+      return this.current.getDate();
+    };
+
+    DateSupport.prototype.getMonth = function() {
+      return this.current.getMonth();
+    };
+
+    DateSupport.prototype.getFullYear = function() {
+      return this.current.getFullYear();
+    };
+
+    DateSupport.prototype.isEqual = function(otherDate) {
       return this.current.toString() === new DateSupport(otherDate).toString();
     };
 
@@ -121,47 +181,16 @@
       return ((0 === year % 4) && (0 !== year % 100)) || (0 === year);
     };
 
-    DateSupport.prototype.beginningOfMonth = function() {
-      return new Date(this.current.getFullYear(), this.current.getMonth());
-    };
-
-    DateSupport.prototype.endOfMonth = function() {
-      var date, n, _i;
-      for (n = _i = 31; _i >= 28; n = --_i) {
-        date = new Date(this.current.getFullYear(), this.current.getMonth(), n);
-        if (date.getMonth() === this.current.getMonth()) {
-          break;
-        }
-      }
-      return date;
-    };
-
-    DateSupport.prototype.daysInMonth = function() {
-      return [31, (this.isLeapYear() ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][this.current.getMonth()];
-    };
-
-    DateSupport.prototype.dayInMiliseconds = function() {
-      return 24 * 60 * 60 * 1000;
-    };
-
-    DateSupport.prototype.dateInMiliseconds = function() {
-      return Date.parse(this.current.toString());
-    };
-
-    DateSupport.prototype.daysAgo = function(n) {
-      var daysInMiliseconds;
-      daysInMiliseconds = n * this.dayInMiliseconds();
-      return new Date(this.dateInMiliseconds() - daysInMiliseconds);
-    };
-
-    DateSupport.prototype.daysFromNow = function(n) {
-      var daysInMiliseconds;
-      daysInMiliseconds = n * this.dayInMiliseconds();
-      return new Date(this.dateInMiliseconds() + daysInMiliseconds);
-    };
-
     DateSupport.prototype.isToday = function() {
-      return new DateSupport(this.current).equals(new Date);
+      return this.isEqual(new Date);
+    };
+
+    DateSupport.prototype.toString = function() {
+      return this.current.toString();
+    };
+
+    dayInMiliseconds = function() {
+      return 24 * 60 * 60 * 1000;
     };
 
     return DateSupport;
