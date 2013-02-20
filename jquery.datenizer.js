@@ -423,8 +423,16 @@
           }
           return $(_this).trigger("change");
         });
-        return $(document).click(function() {
+        $(document).click(function() {
           return _this.calendar.element.hide();
+        });
+        return $(this).closest("form").on("submit", function() {
+          var inputName;
+          inputName = $(_this).attr("name");
+          $(_this).removeAttr("name");
+          return setTimeout(function() {
+            return $(_this).attr("name", inputName);
+          }, 200);
         });
       });
     };
