@@ -1,4 +1,19 @@
 class DateSupport
+  # Formats:
+  # %Y - Year (4 digits)
+  # %y - year (00..99)
+  # %m - Month of the year, zero-padded (01..12)
+  # %_m  blank-padded ( 1..12)
+  # %-m  no-padded (1..12)
+  # %B - The full month name ("January")
+  # %^B  uppercased ("JANUARY")
+  # %b - The abbreviated month name ("Jan")
+  # %^b  uppercased ("JAN")
+  # %h - Equivalent to %b
+  # %d - Day of the month, zero-padded (01..31)
+  # %-d  no-padded (1..31)
+  # %e - Day of the month, blank-padded ( 1..31)
+
   constructor: ->
     @current = switch arguments.length
                  when 0
@@ -12,6 +27,13 @@ class DateSupport
 
     # ignores the time
     @current = new Date(@current.getFullYear(), @current.getMonth(), @current.getDate())
+
+  # class methods
+  @defaultLocale:
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December']
+    abbrMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+        'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
   beginningOfMonth: ->
     new DateSupport @current.getFullYear(), @current.getMonth()
@@ -37,12 +59,7 @@ class DateSupport
 
     date
 
-  format: (format, locale = {}) ->
-    locale.monthNames ?= ['January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December']
-    locale.abbrMonthNames ?= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-        'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
+  format: (format, locale = DateSupport.defaultLocale) ->
     # %Y - Year (4 digits)
     # %y - year (00..99)
     # %m - Month of the year, zero-padded (01..12)
