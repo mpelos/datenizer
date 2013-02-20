@@ -19,36 +19,38 @@ jQuery ($) ->
   $.datenizer.currentLocale = $.datenizer._defaultLocale
 
   $.fn.datenizer = (options) ->
-    @options = $.extend($.datenizer.defaults, options)
+    this.each ->
+      @options = $.extend($.datenizer.defaults, options)
 
-    @hiddenField = if @options.submitISOFormat
-                     @after("<input type='hidden' name='#{@attr("name")}'>").next()
+      @hiddenField = if @options.submitISOFormat
+                       $(this).after("<input type='hidden' name='#{$(this).attr("name")}'>").next()
 
-    @calendar = new Calendar
+      initialDate = if $(this).val() then DateSupport.parse($(this).val(), @options.format) else null
+      @calendar = new Calendar(initialDate)
 
-    @calendar.element.hide().css
-      position: "absolute"
-      top: @offset().top + @innerHeight() - 1
-      left: @offset().left
+      @calendar.element.hide().css
+        position: "absolute"
+        top: $(this).offset().top + $(this).innerHeight() - 1
+        left: $(this).offset().left
 
-    @on "focus", (e) =>
-      @calendar.element.show()
-      @trigger "open"
+      $(this).on "focus", (e) =>
+        @calendar.element.show()
+        $(this).trigger "open"
 
-    @on "change", (e) =>
-      @calendar.element.hide()
-      @trigger "close"
+      $(this).on "change", (e) =>
+        @calendar.element.hide()
+        $(this).trigger "close"
 
-    @on "click", (e) =>
-      e.stopPropagation()
+      $(this).on "click", (e) =>
+        e.stopPropagation()
 
-    @calendar.element.on "click", (e) =>
-      e.stopPropagation()
+      @calendar.element.on "click", (e) =>
+        e.stopPropagation()
 
-    @calendar.element.on "click", ".day", (e) =>
-      @val @calendar.selectedDate.format(@options.format, $.datenizer.defaultLocale)
-      @hiddenField?.val @calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale)
-      @trigger "change"
+      @calendar.element.on "click", ".day", (e) =>
+        $(this).val @calendar.selectedDate.format(@options.format, $.datenizer.defaultLocale)
+        @hiddenField?.val @calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale)
+        $(this).trigger "change"
 
-    $(document).click =>
-      @calendar.element.hide()
+      $(document).click =>
+        @calendar.element.hide()

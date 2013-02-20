@@ -385,39 +385,43 @@
     };
     $.datenizer.currentLocale = $.datenizer._defaultLocale;
     return $.fn.datenizer = function(options) {
-      var _this = this;
-      this.options = $.extend($.datenizer.defaults, options);
-      this.hiddenField = this.options.submitISOFormat ? this.after("<input type='hidden' name='" + (this.attr("name")) + "'>").next() : void 0;
-      this.calendar = new Calendar;
-      this.calendar.element.hide().css({
-        position: "absolute",
-        top: this.offset().top + this.innerHeight() - 1,
-        left: this.offset().left
-      });
-      this.on("focus", function(e) {
-        _this.calendar.element.show();
-        return _this.trigger("open");
-      });
-      this.on("change", function(e) {
-        _this.calendar.element.hide();
-        return _this.trigger("close");
-      });
-      this.on("click", function(e) {
-        return e.stopPropagation();
-      });
-      this.calendar.element.on("click", function(e) {
-        return e.stopPropagation();
-      });
-      this.calendar.element.on("click", ".day", function(e) {
-        var _ref;
-        _this.val(_this.calendar.selectedDate.format(_this.options.format, $.datenizer.defaultLocale));
-        if ((_ref = _this.hiddenField) != null) {
-          _ref.val(_this.calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale));
-        }
-        return _this.trigger("change");
-      });
-      return $(document).click(function() {
-        return _this.calendar.element.hide();
+      return this.each(function() {
+        var initialDate,
+          _this = this;
+        this.options = $.extend($.datenizer.defaults, options);
+        this.hiddenField = this.options.submitISOFormat ? $(this).after("<input type='hidden' name='" + ($(this).attr("name")) + "'>").next() : void 0;
+        initialDate = $(this).val() ? DateSupport.parse($(this).val(), this.options.format) : null;
+        this.calendar = new Calendar(initialDate);
+        this.calendar.element.hide().css({
+          position: "absolute",
+          top: $(this).offset().top + $(this).innerHeight() - 1,
+          left: $(this).offset().left
+        });
+        $(this).on("focus", function(e) {
+          _this.calendar.element.show();
+          return $(_this).trigger("open");
+        });
+        $(this).on("change", function(e) {
+          _this.calendar.element.hide();
+          return $(_this).trigger("close");
+        });
+        $(this).on("click", function(e) {
+          return e.stopPropagation();
+        });
+        this.calendar.element.on("click", function(e) {
+          return e.stopPropagation();
+        });
+        this.calendar.element.on("click", ".day", function(e) {
+          var _ref;
+          $(_this).val(_this.calendar.selectedDate.format(_this.options.format, $.datenizer.defaultLocale));
+          if ((_ref = _this.hiddenField) != null) {
+            _ref.val(_this.calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale));
+          }
+          return $(_this).trigger("change");
+        });
+        return $(document).click(function() {
+          return _this.calendar.element.hide();
+        });
       });
     };
   });
