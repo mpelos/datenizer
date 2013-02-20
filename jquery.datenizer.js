@@ -339,6 +339,10 @@
       return this.monthsAgo(1);
     };
 
+    DateSupport.prototype.toISOFormat = function() {
+      return this.format("%Y-%m-%d");
+    };
+
     DateSupport.prototype.toString = function() {
       return this.current.toString();
     };
@@ -389,8 +393,8 @@
         var initialDate,
           _this = this;
         this.options = $.extend($.datenizer.defaults, options);
-        this.hiddenField = this.options.submitISOFormat ? $(this).after("<input type='hidden' name='" + ($(this).attr("name")) + "'>").next() : void 0;
         initialDate = $(this).val() ? DateSupport.parse($(this).val(), this.options.format) : null;
+        this.hiddenField = this.options.submitISOFormat ? $(this).after("<input type='hidden'>").next().attr("name", $(this).attr("name")).val(initialDate.toISOFormat()) : void 0;
         this.calendar = new Calendar(initialDate);
         this.calendar.element.hide().css({
           position: "absolute",
@@ -415,7 +419,7 @@
           var _ref;
           $(_this).val(_this.calendar.selectedDate.format(_this.options.format, $.datenizer.defaultLocale));
           if ((_ref = _this.hiddenField) != null) {
-            _ref.val(_this.calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale));
+            _ref.val(_this.calendar.selectedDate.toISOFormat());
           }
           return $(_this).trigger("change");
         });

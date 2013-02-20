@@ -192,6 +192,9 @@ class DateSupport
   previousMonth: ->
     @monthsAgo(1)
 
+  toISOFormat: ->
+    @format("%Y-%m-%d")
+
   toString: ->
     @current.toString()
 

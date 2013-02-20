@@ -21,11 +21,13 @@ jQuery ($) ->
   $.fn.datenizer = (options) ->
     this.each ->
       @options = $.extend($.datenizer.defaults, options)
+      initialDate = if $(this).val() then DateSupport.parse($(this).val(), @options.format) else null
 
       @hiddenField = if @options.submitISOFormat
-                       $(this).after("<input type='hidden' name='#{$(this).attr("name")}'>").next()
+                       $(this).after("<input type='hidden'>").next()
+                         .attr("name", $(this).attr("name"))
+                         .val(initialDate.toISOFormat())
 
-      initialDate = if $(this).val() then DateSupport.parse($(this).val(), @options.format) else null
       @calendar = new Calendar(initialDate)
 
       @calendar.element.hide().css
@@ -49,7 +51,7 @@ jQuery ($) ->
 
       @calendar.element.on "click", ".day", (e) =>
         $(this).val @calendar.selectedDate.format(@options.format, $.datenizer.defaultLocale)
-        @hiddenField?.val @calendar.selectedDate.format("%Y-%m-%d", $.datenizer.defaultLocale)
+        @hiddenField?.val @calendar.selectedDate.toISOFormat()
         $(this).trigger "change"
 
       $(document).click =>
