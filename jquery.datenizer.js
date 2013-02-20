@@ -140,6 +140,100 @@
       this.current = new Date(this.current.getFullYear(), this.current.getMonth(), this.current.getDate());
     }
 
+    DateSupport.defaultLocale = {
+      monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      abbrMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    };
+
+    DateSupport.parse = function(formatted, format) {
+      var day, index, letter, month, parseMonthName, year, _i, _len, _ref, _ref1;
+      year = new Date().getFullYear();
+      month = new Date().getMonth();
+      day = new Date().getDate();
+      parseMonthName = function(index, abbr) {
+        var monthIndex, monthName, monthNames, _i, _len;
+        if (abbr == null) {
+          abbr = false;
+        }
+        monthNames = abbr ? DateSupport.defaultLocale.abbrMonthNames : DateSupport.defaultLocale.monthNames;
+        for (monthIndex = _i = 0, _len = monthNames.length; _i < _len; monthIndex = ++_i) {
+          monthName = monthNames[monthIndex];
+          if (formatted.slice(index).toLowerCase().indexOf(monthName.toLowerCase()) !== -1) {
+            return monthIndex;
+          }
+        }
+      };
+      for (index = _i = 0, _len = format.length; _i < _len; index = ++_i) {
+        letter = format[index];
+        if (letter === "%") {
+          switch (format[index + 1]) {
+            case "Y":
+              year = formatted.slice(index, index + 4);
+              formatted = formatted.replace(year, "%Y");
+              break;
+            case "y":
+              year = formatted.slice(index, index + 2);
+              formatted = formatted.replace(year, "%y");
+              year = "20" + year;
+              break;
+            case "m":
+              month = formatted.slice(index, index + 2);
+              formatted = formatted.replace(month, "%m");
+              month = parseInt(month) - 1;
+              break;
+            case "B":
+              month = parseMonthName(index);
+              formatted = formatted.replace(DateSupport.defaultLocale.monthNames[month], "%B");
+              break;
+            case "b":
+            case "h":
+              month = parseMonthName(index, true);
+              formatted = formatted.replace(DateSupport.defaultLocale.abbrMonthNames[month], "%b");
+              break;
+            case "d":
+              day = formatted.slice(index, index + 2);
+              formatted = formatted.replace(day, "%d");
+              break;
+            case "e":
+              day = formatted.slice(index, index + 2);
+              formatted = formatted.replace(day, "%e");
+              day = parseInt(day);
+          }
+          switch (format.slice(index + 1, index + 3)) {
+            case "_m":
+              month = formatted.slice(index, index + 2);
+              formatted = formatted.replace(month, "%_m");
+              month = parseInt(month) - 1;
+              break;
+            case "-m":
+              month = formatted.slice(index, index + 2);
+              if ((10 > (_ref = parseInt(month)) && _ref <= 12)) {
+                month = month[0];
+              }
+              formatted = formatted.replace(month, "%-m");
+              month = parseInt(month) - 1;
+              break;
+            case "^B":
+              month = parseMonthName(index);
+              formatted = formatted.replace(DateSupport.defaultLocale.monthNames[month].toUpperCase(), "%B");
+              break;
+            case "^b":
+              month = parseMonthName(index, true);
+              formatted = formatted.replace(DateSupport.defaultLocale.abbrMonthNames[month], "%^b");
+              break;
+            case "-d":
+              day = formatted.slice(index, index + 2);
+              if ((10 > (_ref1 = parseInt(day)) && _ref1 <= 31)) {
+                day = day[0];
+              }
+              formatted = formatted.replace(day, "%-d");
+              day = parseInt(day);
+          }
+        }
+      }
+      return new DateSupport(year, month, day);
+    };
+
     DateSupport.prototype.beginningOfMonth = function() {
       return new DateSupport(this.current.getFullYear(), this.current.getMonth());
     };
@@ -176,15 +270,9 @@
     };
 
     DateSupport.prototype.format = function(format, locale) {
-      var formatted, _ref, _ref1;
+      var formatted;
       if (locale == null) {
-        locale = {};
-      }
-      if ((_ref = locale.monthNames) == null) {
-        locale.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      }
-      if ((_ref1 = locale.abbrMonthNames) == null) {
-        locale.abbrMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        locale = DateSupport.defaultLocale;
       }
       formatted = format;
       formatted = formatted.replace(/%Y/g, this.getFullYear());

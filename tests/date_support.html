@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DateSupport Tests</title>
+    <meta charset="utf-8">
+
+    <link href="../bootstrap/css/bootstrap.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="js/coffee-script.js" type="text/javascript"></script>
+    <script src="../lib/datenizer/date_support.coffee" type="text/coffeescript"></script>
+  </head>
+
+  <body>
+    <script type="text/coffeescript">
+      assertTrue = (condition) ->
+        if condition
+          console.log "sucess"
+          return true
+        else
+          console.error "Error"
+          return false
+
+      assert = (condition1, condition2) ->
+        if assertTrue condition1 == condition2
+          return true
+        else
+          console.error "Expected #{condition2}"
+          console.error "Got      #{condition1}"
+
+      test = (description, callback) ->
+        console.log ""
+        console.log description
+        callback()
+
+      year = new Date().getFullYear()
+      month = new Date().getMonth()
+      day   = new Date().getDate()
+
+      test ".parse '--%Y--'", ->
+        assert DateSupport.parse("--2010--", "--%Y--").toString(), new Date("2010", month, day).toString()
+
+      test ".parse '--%y--'", ->
+        assert DateSupport.parse("--12--", "--%y--").toString(), new Date("2012", month, day).toString()
+
+      test ".parse '  %m  '", ->
+        assert DateSupport.parse("  05  ", "  %m  ").toString(), new Date(year, 4, day).toString()
+
+      test ".parse '--%_m--'", ->
+        assert DateSupport.parse("-- 9--", "--%_m--").toString(), new Date(year, 8, day).toString()
+
+      test ".parse '--%_m--'", ->
+        assert DateSupport.parse("--12--", "--%_m--").toString(), new Date(year, 11, day).toString()
+
+      test ".parse '--%-m--'", ->
+        assert DateSupport.parse("--1--", "--%-m--").toString(), new Date(year, 0, day).toString()
+
+      test ".parse '--%-m--'", ->
+        assert DateSupport.parse("--12--", "--%-m--").toString(), new Date(year, 11, day).toString()
+
+      test ".parse '--%B--'", ->
+        assert DateSupport.parse("--February--", "--%B--").toString(), new Date(year, 1, day).toString()
+
+      test ".parse '--%^B--'", ->
+        assert DateSupport.parse("--AUGUST--", "--%^B--").toString(), new Date(year, 7, day).toString()
+
+      test ".parse '--%b--'", ->
+        assert DateSupport.parse("--Nov--", "--%b--").toString(), new Date(year, 10, day).toString()
+
+      test ".parse '--%^b--'", ->
+        assert DateSupport.parse("--APR--", "--%^b--").toString(), new Date(year, 3, day).toString()
+
+      test ".parse '--%h--'", ->
+        assert DateSupport.parse("--Dec--", "--%h--").toString(), new Date(year, 11, day).toString()
+
+      test ".parse '_(%d)_'", ->
+        assert DateSupport.parse("_(28)_", "_(%d)_").toString(), new Date(year, month, 28).toString()
+
+      test ".parse '_(%-d)_'", ->
+        assert DateSupport.parse("_(1)_", "_(%-d)_").toString(), new Date(year, month, 1).toString()
+
+      test ".parse '_(%-d)_'", ->
+        assert DateSupport.parse("_(28)_", "_(%-d)_").toString(), new Date(year, month, 28).toString()
+
+      test ".parse '_(%e)_'", ->
+        assert DateSupport.parse("_( 4)_", "_(%e)_").toString(), new Date(year, month, 4).toString()
+
+      test ".parse '_(%e)_'", ->
+        assert DateSupport.parse("_(23)_", "_(%e)_").toString(), new Date(year, month, 23).toString()
+
+      test ".parse '%Y-%m-%d'", ->
+        assert DateSupport.parse("2010-11-12", "%Y-%m-%d").toString(), new Date(2010, 10, 12).toString()
+
+      test ".parse '%-d/%-m/%y'", ->
+        assert DateSupport.parse("9/1/10", "%-d/%-m/%y").toString(), new Date(2010, 0, 9).toString()
+
+      test ".parse '%e/%_m/%y'", ->
+        assert DateSupport.parse(" 9/ 1/10", "%e/%_m/%y").toString(), new Date(2010, 0, 9).toString()
+
+      test ".parse '%B %d, %Y'", ->
+        assert DateSupport.parse("August 31, 1985", "%B %d, %Y").toString(), new Date(1985, 7, 31).toString()
+
+      test ".parse '%^b %d'", ->
+        assert DateSupport.parse("AUG 31", "%^b %d").toString(), new Date(year, 7, 31).toString()
+
+      test ".parse 'asd%Yqwe%d zxc%m'", ->
+        assert DateSupport.parse("asd2011qwe20 zxc02", "asd%Yqwe%d zxc%m").toString(), new Date(2011, 1, 20).toString()
+    </script>
+  </body>
+</html>

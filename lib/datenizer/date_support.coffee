@@ -35,6 +35,74 @@ class DateSupport
     abbrMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
         'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+  @parse = (formatted, format) ->
+    year = new Date().getFullYear()
+    month = new Date().getMonth()
+    day = new Date().getDate()
+
+    parseMonthName = (index, abbr = false) ->
+      monthNames = if abbr
+                     DateSupport.defaultLocale.abbrMonthNames
+                   else
+                     DateSupport.defaultLocale.monthNames
+
+      for monthName, monthIndex in monthNames
+        if formatted.slice(index).toLowerCase().indexOf(monthName.toLowerCase()) isnt -1
+          return monthIndex
+
+    for letter, index in format
+      if letter is "%"
+        switch format[index + 1]
+          when "Y"
+            year = formatted.slice(index, index + 4)
+            formatted = formatted.replace year, "%Y"
+          when "y"
+            year = formatted.slice(index, index + 2)
+            formatted = formatted.replace year, "%y"
+            year = "20#{year}"
+          when "m"
+            month = formatted.slice(index, index + 2)
+            formatted = formatted.replace month, "%m"
+            month = parseInt(month) - 1
+          when "B"
+            month = parseMonthName(index)
+            formatted = formatted.replace DateSupport.defaultLocale.monthNames[month], "%B"
+          when "b", "h"
+            month = parseMonthName(index, true)
+            formatted = formatted.replace DateSupport.defaultLocale.abbrMonthNames[month], "%b"
+          when "d"
+            day = formatted.slice(index, index + 2)
+            formatted = formatted.replace day, "%d"
+          when "e"
+            day = formatted.slice(index, index + 2)
+            formatted = formatted.replace day, "%e"
+            day = parseInt(day)
+
+        switch format.slice(index + 1, index + 3)
+          when "_m"
+            month = formatted.slice(index, index + 2)
+            formatted = formatted.replace month, "%_m"
+            month = parseInt(month) - 1
+          when "-m"
+            month = formatted.slice(index, index + 2)
+            month = month[0] if 10 > parseInt(month) <= 12
+            formatted = formatted.replace month, "%-m"
+            month = parseInt(month) - 1
+          when "^B"
+            month = parseMonthName(index)
+            formatted = formatted.replace DateSupport.defaultLocale.monthNames[month].toUpperCase(), "%B"
+          when "^b"
+            month = parseMonthName(index, true)
+            formatted = formatted.replace DateSupport.defaultLocale.abbrMonthNames[month], "%^b"
+          when "-d"
+            day = formatted.slice(index, index + 2)
+            day = day[0] if 10 > parseInt(day) <= 31
+            formatted = formatted.replace day, "%-d"
+            day = parseInt(day)
+
+    new DateSupport year, month, day
+
+  # instance methods
   beginningOfMonth: ->
     new DateSupport @current.getFullYear(), @current.getMonth()
 
