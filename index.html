@@ -8,19 +8,59 @@
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="jquery.datenizer.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
-      jQuery(function($) {
-        $(".datepicker").datenizer({
-          submitISOFormat: true
-        });
-      });
-    </script>
   </head>
 
   <body>
-    <form action="#">
-      <input name="date" type="text" class="datepicker" />
-    </form>
+    <div class="container">
+      <h1>Datenizer</h1>
+
+      <form action="#">
+        <div class="well">
+          <h3>Simple</h3>
+          <input name="date" type="text" id="simple" />
+        </div>
+      </form>
+
+      <form action="#">
+        <div class="well">
+          <h3>Valued</h3>
+          <input name="date" type="text" id="valued" value="2013-08-31" />
+        </div>
+      </form>
+
+      <form action="#">
+        <div class="well">
+          <h3>Formatted</h3>
+          <input name="date" type="text" id="formatted" value="29/02/2012" />
+        </div>
+      </form>
+
+      <form action="#" id="submit_iso_form">
+        <div class="well">
+          <h3>Submits ISO Format</h3>
+          <input name="date" type="text" id="submit_iso" value="29/02/2012" />
+          <input type="submit" class="btn btn-primary" style="display: block" />
+        </div>
+      </form>
+    </div>
+
+    <script type="text/javascript">
+      jQuery(function($) {
+        $("#simple").datenizer();
+        $("#valued").datenizer();
+        $("#formatted").datenizer({ format: "%d/%m/%Y" });
+
+        $("#submit_iso").datenizer({
+          format: "%d/%m/%Y",
+          submitISOFormat: true
+        });
+
+        $("#submit_iso_form").on("submit", function(e) {
+          e.preventDefault();
+          var value = $(this).serializeArray()[0].value;
+          alert(value);
+        });
+      });
+    </script>
   </body>
 </html>
