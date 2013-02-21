@@ -1,5 +1,3 @@
-$.datenizer.defaults.format = "%d/%m/%Y"
-
 $.datenizer.locale['pt-BR'] = {
     monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
@@ -12,3 +10,6 @@ $.datenizer.locale['pt-BR'] = {
 
     abbrDayNames: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 }
+
+$.datenizer.setLocale("pt-BR");
+$.datenizer.defaults.format = "%d/%m/%Y"
