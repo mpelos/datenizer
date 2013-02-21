@@ -9,7 +9,7 @@ $.datenizer.locale['pt-BR'] = {
         'Sábado'],
 
     abbrDayNames: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
-}
+};
 
 $.datenizer.setLocale("pt-BR");
-$.datenizer.defaults.format = "%d/%m/%Y"
+$.datenizer.defaults.format = "%d/%m/%Y";
