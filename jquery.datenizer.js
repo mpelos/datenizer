@@ -371,7 +371,7 @@
 
   })();
 
-  jQuery(function($) {
+  (function($) {
     $.datenizer = {
       defaults: {
         format: "%Y-%m-%d",
@@ -438,6 +438,6 @@
         });
       });
     };
-  });
+  })(jQuery);
 
 }).call(this);

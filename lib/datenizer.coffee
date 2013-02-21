@@ -1,4 +1,4 @@
-jQuery ($) ->
+(($) ->
   $.datenizer =
     defaults:
       format: "%Y-%m-%d"
@@ -68,3 +68,4 @@ jQuery ($) ->
         setTimeout =>
           $(this).attr("name", inputName)
         , 200
+)(jQuery)
