@@ -33,12 +33,16 @@
 
       @calendar = new Calendar(initialDate)
 
-      @calendar.element.hide().css
-        position: "absolute"
-        top: $(this).offset().top + $(this).innerHeight() - 1
-        left: $(this).offset().left
+      positionCalendar = =>
+        @calendar.element.css
+          top: $(this).offset().top + $(this).innerHeight() - 1
+          left: $(this).offset().left
+
+      @calendar.element.hide().css("position", "absolute")
+      positionCalendar()
 
       $(this).on "focus", (e) =>
+        positionCalendar()
         @calendar.element.show()
         $(this).trigger "open"
 
@@ -48,6 +52,9 @@
 
       $(this).on "click", (e) =>
         e.stopPropagation()
+
+      $(window).on "resize", (e) ->
+        positionCalendar()
 
       @calendar.element.on "click", (e) =>
         e.stopPropagation()

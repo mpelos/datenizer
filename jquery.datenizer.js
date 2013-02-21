@@ -392,18 +392,22 @@
     $.datenizer.setLocale("en");
     return $.fn.datenizer = function(options) {
       return this.each(function() {
-        var initialDate,
+        var initialDate, positionCalendar,
           _this = this;
         this.options = $.extend($.datenizer.defaults, options);
         initialDate = $(this).val() ? DateSupport.parse($(this).val(), this.options.format) : null;
         this.hiddenField = this.options.submitISOFormat ? $(this).after("<input type='hidden'>").next().attr("name", $(this).attr("name")).val(initialDate.toISOFormat()) : void 0;
         this.calendar = new Calendar(initialDate);
-        this.calendar.element.hide().css({
-          position: "absolute",
-          top: $(this).offset().top + $(this).innerHeight() - 1,
-          left: $(this).offset().left
-        });
+        positionCalendar = function() {
+          return _this.calendar.element.css({
+            top: $(_this).offset().top + $(_this).innerHeight() - 1,
+            left: $(_this).offset().left
+          });
+        };
+        this.calendar.element.hide().css("position", "absolute");
+        positionCalendar();
         $(this).on("focus", function(e) {
+          positionCalendar();
           _this.calendar.element.show();
           return $(_this).trigger("open");
         });
@@ -413,6 +417,9 @@
         });
         $(this).on("click", function(e) {
           return e.stopPropagation();
+        });
+        $(window).on("resize", function(e) {
+          return positionCalendar();
         });
         this.calendar.element.on("click", function(e) {
           return e.stopPropagation();
