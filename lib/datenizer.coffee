@@ -13,10 +13,13 @@ jQuery ($) ->
         'Friday', 'Saturday']
       abbrDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
+    locale: {}
+
     setLocale: (locale) ->
       @currentLocale = @locale[locale]
 
-  $.datenizer.currentLocale = $.datenizer._defaultLocale
+  $.datenizer.locale["en"] = $.datenizer._defaultLocale
+  $.datenizer.setLocale("en")
 
   $.fn.datenizer = (options) ->
     this.each ->

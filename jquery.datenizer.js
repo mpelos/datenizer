@@ -383,11 +383,13 @@
         dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         abbrDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
       },
+      locale: {},
       setLocale: function(locale) {
         return this.currentLocale = this.locale[locale];
       }
     };
-    $.datenizer.currentLocale = $.datenizer._defaultLocale;
+    $.datenizer.locale["en"] = $.datenizer._defaultLocale;
+    $.datenizer.setLocale("en");
     return $.fn.datenizer = function(options) {
       return this.each(function() {
         var initialDate,
