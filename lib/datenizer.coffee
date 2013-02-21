@@ -68,11 +68,12 @@
         @calendar.element.hide()
 
       # Removes the input's name attribute on submition to prevent the datepicker input value submits
-      $(this).closest("form").on "submit", =>
-        inputName = $(this).attr("name")
-        $(this).removeAttr("name")
+      if @options.submitISOFormat
+        $(this).closest("form").on "submit", =>
+          inputName = $(this).attr("name")
+          $(this).removeAttr("name")
 
-        setTimeout =>
-          $(this).attr("name", inputName)
-        , 200
+          setTimeout =>
+            $(this).attr("name", inputName)
+          , 200
 )(jQuery)
