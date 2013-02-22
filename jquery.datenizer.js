@@ -5,8 +5,8 @@
   Calendar = (function() {
 
     function Calendar(selectedDate) {
-      this.selectedDate = selectedDate != null ? selectedDate : new DateSupport;
-      this.currentDate = this.selectedDate;
+      this.selectedDate = selectedDate;
+      this.currentDate = this.selectedDate || new DateSupport;
       this.element = jQuery("body").append("<div class='datenizer'></div>").children(".datenizer:last");
       this.render();
       this.insertEventListeners();
@@ -58,7 +58,7 @@
         if (loopDate.isToday()) {
           classNames += " today";
         }
-        if (this.selectedDate.isEqual(currentDate)) {
+        if (this.selectedDate ? this.selectedDate.isEqual(currentDate) : void 0) {
           classNames += " selected";
         }
         this.element.find(".calendar tbody tr:last").append("<td><a href='#' class='" + classNames + "' data-date='" + (loopDate.dateInMiliseconds()) + "'>" + (loopDate.getDate()) + "</a></td>");

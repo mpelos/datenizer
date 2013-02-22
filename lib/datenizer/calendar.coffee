@@ -1,6 +1,6 @@
 class Calendar
-  constructor: (@selectedDate = new DateSupport) ->
-    @currentDate = @selectedDate
+  constructor: (@selectedDate) ->
+    @currentDate = @selectedDate || new DateSupport
     @element = jQuery("body").append("<div class='datenizer'></div>").children(".datenizer:last")
     @render()
     @insertEventListeners()
@@ -73,7 +73,7 @@ class Calendar
       classNames = "day"
       classNames += " other-month" if loopDate.getMonth() isnt startDate.getMonth()
       classNames += " today"       if loopDate.isToday()
-      classNames += " selected"    if @selectedDate.isEqual(currentDate)
+      classNames += " selected"    if @selectedDate.isEqual(currentDate) if @selectedDate
 
       @element.find(".calendar tbody tr:last")
         .append("<td><a href='#' class='#{classNames}' data-date='#{loopDate.dateInMiliseconds()}'>#{loopDate.getDate()}</a></td>")
