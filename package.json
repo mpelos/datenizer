@@ -5,8 +5,10 @@
     "node": "~0.8.19",
     "npm":  "~1.1.45"
   },
-  "dependencies": {
+  "devDependencies": {
     "coffee-script": "~1.4.0",
+    "expect.js":     "~0.2.0",
+    "mocha":         "~1.8.1",
     "uglify-js":     "~2.2.5"
   }
 }
