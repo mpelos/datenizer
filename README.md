@@ -1,7 +1,7 @@
 Datenizer
 =========
 
-Datenizer is a simple jQuery datepicker that try to not suck so much.
+Datenizer is a simple jQuery datepicker that tries not to suck so much.
 
 
 Usage
@@ -92,25 +92,25 @@ Internationalization
     $.datenizer.setLocale("en");
 
 ### Defining a new locale: 
-After define the new locale you have to set it.
+    $.datenizer.locale["pt-BR"] = {
+        monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
 
-    $.datenizer.locale["en"] = {
-        monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'],
+        abbrMonthNames: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul',
+            'Ago', 'Set', 'Out', 'Nov', 'Dez'],
 
-        abbrMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-            'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+            'Sexta', 'Sábado'],
 
-        dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-            'Friday', 'Saturday'],
-
-        abbrDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+        abbrDayNames: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']
     }
+
+    $.datenizer.setLocale("pt-BR");
 
 
 Global setups
 -------------
-You can set a global setup to use in all datenizers in your application.
+You can set a global configuration to be used by all datenizers in your application.
 
     $.datenizer.defaults = {
         format: "%d/%m/%Y",
