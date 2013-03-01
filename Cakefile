@@ -8,6 +8,9 @@ printOut = (error, output) ->
   throw error if error
   process.stdout.write output
 
+task "test", ->
+  exec "mocha --compilers coffee:coffee-script --require should --colors", printOut
+
 task "watch", "Generate the javascript output when changes are detected", ->
   watch = exec "coffee -j lib/#{fileName}.js -cw src/datenizer/* src/datenizer.coffee"
   watch.stdout.on "data", (data) -> process.stdout.write data
