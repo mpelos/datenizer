@@ -4,18 +4,75 @@ year = new Date().getFullYear()
 month = new Date().getMonth()
 day   = new Date().getDate()
 
+
+describe "#constructor", ->
+  removeTime = (date) ->
+    date = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+  context "with no arguments", ->
+    today = new Date(year, month, day)
+    dateSupport = new DateSupport()
+
+    it "sets current property to current date (with no time)", ->
+      dateSupport.toString().should.equal(today.toString())
+
+  context "with one argument", ->
+    date = "2012-1-3"
+
+    context "when the argument is a Date", ->
+      date = removeTime(new Date(date))
+      dateSupport = new DateSupport(date)
+
+      it "sets current property to use the given date (with no time)", ->
+        dateSupport.toString().should.equal(date.toString())
+
+    context "when the argument is not a date", ->
+      dateSupport = new DateSupport(date)
+
+      it "delegates the argument to javascript's new Date and set current property with its return", ->
+        dateSupport.toString().should.equal(date.toString())
+
+  context "with two arguments", ->
+    [arg1, arg2] = [2012, 8]
+    date = removeTime(new Date(arg1, arg2))
+    dateSupport = new DateSupport(arg1, arg2)
+
+    it "delegates the arguments to javascript's new Date and set current property with its return", ->
+      dateSupport.toString().should.equal(date.toString())
+
+  context "with three arguments", ->
+    [arg1, arg2, arg3] = [2012, 8, 4]
+    date = removeTime(new Date(arg1, arg2))
+    dateSupport = new DateSupport(arg1, arg2)
+
+    it "delegates the arguments to javascript's new Date and set current property with its return", ->
+      dateSupport.toString().should.equal(date.toString())
+
 describe ".parse", ->
 
   context "when passing only a year", ->
-    date = new Date(2012, month, day).toString()
-    
-    it "parses '%Y' into a four digits year", ->
-      parsedDate = DateSupport.parse("2012", "%Y").toString()
-      parsedDate.should.equal(date)
 
-    it "parses '%y' into a two digits year", ->
-      parsedDate = DateSupport.parse("12", "%y").toString()
-      parsedDate.should.equal(date)
+    # context "and year is earlier than 2000", ->
+    #   date = new Date(1987, month, day).toString()
+
+    #   it "parses '%Y' into a four digits year", ->
+    #     parsedDate = DateSupport.parse("1987", "%Y").toString()
+    #     parsedDate.should.equal(date)
+
+    #   it "parses '%y' into a two digits year", ->
+    #     parsedDate = DateSupport.parse("87", "%y").toString()
+    #     parsedDate.should.equal(date)
+
+    context "and year is 2000 or later", ->
+      date = new Date(2012, month, day).toString()
+      
+      it "parses '%Y' into a four digits year", ->
+        parsedDate = DateSupport.parse("2012", "%Y").toString()
+        parsedDate.should.equal(date)
+
+      it "parses '%y' into a two digits year", ->
+        parsedDate = DateSupport.parse("12", "%y").toString()
+        parsedDate.should.equal(date)
 
   context "when passing only a month", ->
 
