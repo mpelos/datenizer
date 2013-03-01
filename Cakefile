@@ -4,14 +4,18 @@ UglifyJS = require "uglify-js"
 
 fileName = "jquery.datenizer"
 
+printOut = (error, output) ->
+  throw error if error
+  process.stdout.write output
+
 task "watch", "Generate the javascript output when changes are detected", ->
-  watch = exec "coffee -j #{fileName}.js -cw lib/datenizer/* lib/datenizer.coffee"
+  watch = exec "coffee -j lib/#{fileName}.js -cw src/datenizer/* src/datenizer.coffee"
   watch.stdout.on "data", (data) -> process.stdout.write data
   exec "cake minify"
 
 task "build", "Generate the javascript output", ->
-  exec "coffee -j jquery.datenizer.js -c lib/datenizer/* lib/datenizer.coffee"
+  exec "coffee -j lib/jquery.datenizer.js -c src/datenizer/* src/datenizer.coffee"
 
 task "minify", "Generate the minified javascript output", ->
-  output = UglifyJS.minify("#{fileName}.js")
-  fs.writeFile "#{fileName}.min.js", output.code
+  output = UglifyJS.minify("lib/#{fileName}.js")
+  fs.writeFile "lib/#{fileName}.min.js", output.code

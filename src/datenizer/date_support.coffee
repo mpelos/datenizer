@@ -63,7 +63,7 @@ class DateSupport
           when "m"
             month = formatted.slice(index, index + 2)
             formatted = formatted.replace month, "%m"
-            month = parseInt(month) - 1
+            month = parseInt(month, 10) - 1
           when "B"
             month = parseMonthName(index)
             formatted = formatted.replace DateSupport.defaultLocale.monthNames[month], "%B"
@@ -208,3 +208,5 @@ class DateSupport
 
   blankPadNumber = (n) ->
     if n < 10 then ' ' + n else n
+
+if exports? then exports.DateSupport = DateSupport
