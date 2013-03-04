@@ -51,17 +51,25 @@ describe "#beginningOfMonth", ->
   it "returns the first day of the given month and year", ->
     dateSupport = new DateSupport()
     beginningOfMonth = dateSupport.beginningOfMonth().toString()
-    firstOfThisMonth = new Date(year, month, 1)
+    firstOfThisMonth = new Date(year, month, 1).toString()
 
-    beginningOfMonth.should.equal(firstOfThisMonth.toString())
+    beginningOfMonth.should.equal firstOfThisMonth
 
 describe "#daysAgo", ->
   it "returns a date a numbers of days earlier than current date equal to the given argument", ->
     dateSupport = new DateSupport()
     daysAgo = dateSupport.daysAgo(2).toString()
-    twoDaysAgo = new Date(year, month, day - 2)
+    twoDaysAgo = new Date(year, month, day - 2).toString()
 
-    daysAgo.should.equal(twoDaysAgo.toString())
+    daysAgo.should.equal twoDaysAgo
+
+describe "#daysFromNow", ->
+  it "returns a date a number of days from now equal to the given argument", ->
+    dateSupport = new DateSupport()
+    daysFromNow = dateSupport.daysFromNow(4).toString()
+    fourDaysFromNow = new Date(year, month, day + 4).toString()
+
+    daysFromNow.should.equal fourDaysFromNow
 
 describe ".parse", ->
 
