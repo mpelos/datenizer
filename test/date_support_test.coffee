@@ -84,6 +84,30 @@ describe "#daysInMonth", ->
     dateSupport = new DateSupport(2013, 7)
     dateSupport.daysInMonth().should.equal 31
 
+describe "#endOfMonth", ->
+  it "returns the correct number of days of the current dateSupport month when the month has 31 days", ->
+    dateSupport = new DateSupport(year, 0)
+    endOfMonth = dateSupport.endOfMonth().toString()
+    lastDayOfJan = new Date(year, 0, 31).toString()
+    endOfMonth.should.equal lastDayOfJan
+
+  it "returns the correct number of days of the current dateSupport month when the month has 30 days", ->
+    dateSupport = new DateSupport(year, 3)
+    endOfMonth = dateSupport.endOfMonth().toString()
+    lastDayOfJan = new Date(year, 3, 30).toString()
+    endOfMonth.should.equal lastDayOfJan
+
+  it "returns the correct number of days of the current dateSupport month when it is Febuary", ->
+    dateSupport = new DateSupport(2013, 1)
+    endOfMonth = dateSupport.endOfMonth().toString()
+    lastDayOfJan = new Date(2013, 1, 28).toString()
+    endOfMonth.should.equal lastDayOfJan
+
+    dateSupport = new DateSupport(2012, 1)
+    endOfMonth = dateSupport.endOfMonth().toString()
+    lastDayOfJan = new Date(2012, 1, 29).toString()
+    endOfMonth.should.equal lastDayOfJan
+
 describe ".parse", ->
 
   context "when passing only a year", ->
