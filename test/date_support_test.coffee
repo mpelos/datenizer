@@ -55,6 +55,14 @@ describe "#beginningOfMonth", ->
 
     beginningOfMonth.should.equal(firstOfThisMonth.toString())
 
+describe "#daysAgo", ->
+  it "returns a date a numbers of days earlier than current date equal to the given argument", ->
+    dateSupport = new DateSupport()
+    daysAgo = dateSupport.daysAgo(2).toString()
+    twoDaysAgo = new Date(year, month, day - 2)
+
+    daysAgo.should.equal(twoDaysAgo.toString())
+
 describe ".parse", ->
 
   context "when passing only a year", ->
