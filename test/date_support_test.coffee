@@ -71,6 +71,11 @@ describe "#daysFromNow", ->
 
     daysFromNow.should.equal fourDaysFromNow
 
+describe "#daysInMonth", ->
+  it "returns the number of days the current dateSupport month has", ->
+    dateSupport = new DateSupport(2013, 7)
+    dateSupport.daysInMonth().should.equal(31)
+
 describe ".parse", ->
 
   context "when passing only a year", ->
