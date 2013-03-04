@@ -55,6 +55,14 @@ describe "#beginningOfMonth", ->
 
     beginningOfMonth.should.equal firstOfThisMonth
 
+describe "#dateInMiliseconds", ->
+  it "returns the current dateSupport date (without time) in miliseconds", ->
+    dateSupport = new DateSupport()
+    dateInMiliseconds = dateSupport.dateInMiliseconds().toString()
+    todayInMiliseconds = Date.parse(new Date(year, month, day)).toString()
+
+    dateInMiliseconds.should.equal todayInMiliseconds
+
 describe "#daysAgo", ->
   it "returns a date a numbers of days earlier than current date equal to the given argument", ->
     dateSupport = new DateSupport()
@@ -67,14 +75,14 @@ describe "#daysFromNow", ->
   it "returns a date a number of days from now equal to the given argument", ->
     dateSupport = new DateSupport()
     daysFromNow = dateSupport.daysFromNow(4).toString()
-    fourDaysFromNow = new Date(year, month, day + 4).toString()
+    fourDaysFromNow = new Date(year, month, day + 4)
 
-    daysFromNow.should.equal fourDaysFromNow
+    daysFromNow.should.equal fourDaysFromNow.toString()
 
 describe "#daysInMonth", ->
   it "returns the number of days the current dateSupport month has", ->
     dateSupport = new DateSupport(2013, 7)
-    dateSupport.daysInMonth().should.equal(31)
+    dateSupport.daysInMonth().should.equal 31
 
 describe ".parse", ->
 
