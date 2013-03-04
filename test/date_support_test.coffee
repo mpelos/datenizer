@@ -4,7 +4,6 @@ year = new Date().getFullYear()
 month = new Date().getMonth()
 day   = new Date().getDate()
 
-
 describe "#constructor", ->
   removeTime = (date) ->
     date = new Date(date.getFullYear(), date.getMonth(), date.getDate())
@@ -47,6 +46,14 @@ describe "#constructor", ->
 
     it "delegates the arguments to javascript's new Date and set current property with its return", ->
       dateSupport.toString().should.equal(date.toString())
+
+describe "#beginningOfMonth", ->
+  it "returns the first day of the given month and year", ->
+    dateSupport = new DateSupport()
+    beginningOfMonth = dateSupport.beginningOfMonth().toString()
+    firstOfThisMonth = new Date(year, month, 1)
+
+    beginningOfMonth.should.equal(firstOfThisMonth.toString())
 
 describe ".parse", ->
 
