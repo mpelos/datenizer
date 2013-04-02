@@ -50,9 +50,6 @@
         @calendar.element.hide()
         $(this).trigger "close"
 
-      $(this).on "click", (e) =>
-        e.stopPropagation()
-
       $(window).on "resize", (e) ->
         positionCalendar()
 
@@ -64,8 +61,9 @@
         @hiddenField?.val @calendar.selectedDate.toISOFormat()
         $(this).trigger "change"
 
-      $(document).click =>
-        @calendar.element.hide()
+      $(document).click (event) =>
+        if event.target isnt this
+          @calendar.element.hide()
 
       # Removes the input's name attribute on submition to prevent the datepicker input value submits
       if @options.submitISOFormat
