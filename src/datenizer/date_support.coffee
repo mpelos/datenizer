@@ -59,7 +59,8 @@ class DateSupport
           when "y"
             year = formatted.slice(index, index + 2)
             formatted = formatted.replace year, "%y"
-            year = "20#{year}"
+            currentYear = (new Date).getFullYear() - 2000
+            year = if year <= currentYear + 5 then "20#{year}" else "19#{year}"
           when "m"
             month = formatted.slice(index, index + 2)
             formatted = formatted.replace month, "%m"
