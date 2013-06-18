@@ -14,6 +14,12 @@ class DateSupport
   # %-d  no-padded (1..31)
   # %e - Day of the month, blank-padded ( 1..31)
 
+  @defaultLocale:
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December']
+    abbrMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+        'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
   constructor: ->
     @current = switch arguments.length
                  when 0
@@ -26,14 +32,11 @@ class DateSupport
                    new Date(arguments[0], arguments[1], arguments[2])
 
     # ignores the time
-    @current = new Date(@current.getFullYear(), @current.getMonth(), @current.getDate())
+    @current = DateSupport.ignoresTime(@current)
 
   # class methods
-  @defaultLocale:
-    monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December']
-    abbrMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-        'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  @ignoresTime = (date) ->
+    new Date(date.getFullYear(), date.getMonth(), date.getDate())
 
   @parse = (formatted, format) ->
     year = new Date().getFullYear()

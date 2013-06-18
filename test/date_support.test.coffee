@@ -6,6 +6,12 @@ day   = new Date().getDate()
 
 describe "DateSupport", ->
   # class methods
+  describe ".ignoresTime()", ->
+    it "returns the date ignoring the time", ->
+      dateWithTime = new Date
+      dateWithoutTime = new Date(dateWithTime.getFullYear(), dateWithTime.getMonth(), dateWithTime.getDate())
+      DateSupport.ignoresTime(dateWithTime).toString().should.equal dateWithoutTime.toString()
+
   describe ".parse()", ->
     context "when passing only a year", ->
       context "and year is earlier than 2000", ->
