@@ -9,7 +9,15 @@ printOut = (error, output) ->
   process.stdout.write output
 
 task "test", ->
-  exec "mocha --compilers coffee:coffee-script --require should --colors", printOut
+  exec "NODE_ENV=test
+    ./node_modules/.bin/mocha
+    --compilers coffee:coffee-script
+    --require coffee-script
+    --require should
+    --colors
+  ", (error, output) ->
+    throw error if error
+    console.log output
 
 task "watch", "Generate the javascript output when changes are detected", ->
   watch = exec "coffee -j lib/#{fileName}.js -cw src/datenizer/* src/datenizer.coffee"
