@@ -256,3 +256,79 @@ describe "DateSupport", ->
       lastDayOfJan = new Date(2012, 1, 29).toString()
       endOfMonth.should.equal lastDayOfJan
 
+  describe "#getDate()", ->
+    it "delegates to native Date class", ->
+      (new DateSupport).getDate().should.equal (new Date).getDate()
+
+  describe "#getDay()", ->
+    it "delegates to native Date class", ->
+      (new DateSupport).getDay().should.equal (new Date).getDay()
+
+  describe "#getMonth()", ->
+    it "delegates to native Date class", ->
+      (new DateSupport).getMonth().should.equal (new Date).getMonth()
+
+  describe "#getFullYear()", ->
+    it "delegates to native Date class", ->
+      (new DateSupport).getFullYear().should.equal (new Date).getFullYear()
+
+  describe "#isEqual()", ->
+    date = new Date(2013, 10, 10)
+
+    context "when the current date is equal to param date", ->
+      it "returns true", ->
+        dateSupport = new DateSupport(2013, 10, 10)
+        dateSupport.isEqual(date).should.be.true
+
+    context "when the current date is different to param date", ->
+      it "returns false", ->
+        dateSupport = new DateSupport(2012, 10, 10)
+        dateSupport.isEqual(date).should.be.false
+
+  describe "#isLeapYear()", ->
+    context "when the current date is leap year", ->
+      it "returns true", ->
+        new DateSupport(2008, 1, 1).isLeapYear().should.be.true
+
+    context "when the current date isn't leap year", ->
+      it "returns false", ->
+        new DateSupport(2010, 1, 1).isLeapYear().should.be.false
+
+  describe "#isToday()", ->
+    context "when the current date is today", ->
+      it "returns true", ->
+        new DateSupport(new Date).isToday().should.be.true
+
+    context "when the current date isn't today", ->
+      it "returns false", ->
+        new DateSupport(2012, 11, 25).isToday().should.be.false
+
+  describe "#monthsAgo()", ->
+    it "calculates the date subtracting da param number to the current date", ->
+      dateSupport = new DateSupport(1999, 11, 31)
+      dateSupport.monthsAgo(13).getMonth().should.equal(10)
+
+  describe "#monthsFromNow()", ->
+    it "calculates the date adding da param number to the current date", ->
+      dateSupport = new DateSupport(1999, 11, 31)
+      dateSupport.monthsFromNow(13).getMonth().should.equal(1)
+
+  describe "#nextMonth()", ->
+    it "returns current date next month", ->
+      dateSupport = new DateSupport(2012, 3, 3)
+      dateSupport.nextMonth().getMonth().should.equal(4)
+
+  describe "#previousMonth()", ->
+    it "returns current date previous month", ->
+      dateSupport = new DateSupport(2012, 3, 3)
+      dateSupport.previousMonth().getMonth().should.equal(2)
+
+  describe "#toISOFormat()", ->
+    it "formats the current date to ISO 8601 format", ->
+      dateSupport = new DateSupport(2011, 10, 11)
+      dateSupport.toISOFormat().should.equal("2011-11-11")
+
+  describe "#toString()", ->
+    it "delegates to native Date class", ->
+      date = DateSupport.ignoresTime(new Date)
+      (new DateSupport).toString().should.equal date.toString()

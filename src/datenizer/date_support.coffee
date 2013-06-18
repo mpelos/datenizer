@@ -160,11 +160,11 @@ class DateSupport
     formatted = formatted.replace /%-d/g, @getDate()
     formatted = formatted.replace /%e/g, blankPadNumber(@getDate())
 
-  getDay: ->
-    @current.getDay()
-
   getDate: ->
     @current.getDate()
+
+  getDay: ->
+    @current.getDay()
 
   getMonth: ->
     @current.getMonth()
