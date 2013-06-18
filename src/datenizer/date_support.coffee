@@ -141,7 +141,6 @@ class DateSupport
     # %^B  uppercased ("JANUARY")
     # %b - The abbreviated month name ("Jan")
     # %^b  uppercased ("JAN")
-    # %h - Equivalent to %b
     # %d - Day of the month, zero-padded (01..31)
     # %-d  no-padded (1..31)
     # %e - Day of the month, blank-padded ( 1..31)
