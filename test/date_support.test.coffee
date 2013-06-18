@@ -256,6 +256,57 @@ describe "DateSupport", ->
       lastDayOfJan = new Date(2012, 1, 29).toString()
       endOfMonth.should.equal lastDayOfJan
 
+  describe "#format()", ->
+    dateSupport = new DateSupport(2000, 0, 1)
+
+    context "when there is %Y in the string param", ->
+      it "converts %Y to current date's year (4 digits)", ->
+        dateSupport.format("%Y").should.be.equal("2000")
+
+    context "when there is %y in the string param", ->
+      it "converts %y to current date's year (2 digits)", ->
+        dateSupport.format("%y").should.be.equal("00")
+
+    context "when there is %m in the string param", ->
+      it "converts %m to current date's month number zero-padded", ->
+        dateSupport.format("%m").should.be.equal("01")
+
+    context "when there is %_m in the string param", ->
+      it "converts %_m to current date's month number blank-padded", ->
+        dateSupport.format("%_m").should.be.equal(" 1")
+
+    context "when there is %-m in the string param", ->
+      it "converts %-m to current date's month number no-padded", ->
+        dateSupport.format("%-m").should.be.equal("1")
+
+    context "when there is %B in the string param", ->
+      it "converts %B to current date's month name", ->
+        dateSupport.format("%B").should.be.equal("January")
+
+    context "when there is %^B in the string param", ->
+      it "converts %^B to current date's uppercased month name", ->
+        dateSupport.format("%^B").should.be.equal("JANUARY")
+
+    context "when there is %b in the string param", ->
+      it "converts %b to current date's abbreviated month name", ->
+        dateSupport.format("%b").should.be.equal("Jan")
+
+    context "when there is %^b in the string param", ->
+      it "converts %^b to current date's uppercased abbreviated month name", ->
+        dateSupport.format("%^b").should.be.equal("JAN")
+
+    context "when there is %d in the string param", ->
+      it "converts %d to current date's day of the month zero-padded", ->
+        dateSupport.format("%d").should.be.equal("01")
+
+    context "when there is %-d in the string param", ->
+      it "converts %-d to current date's day of the month no-padded", ->
+        dateSupport.format("%-d").should.be.equal("1")
+
+    context "when there is %e in the string param", ->
+      it "converts %e to current date's day of the month blank-padded", ->
+        dateSupport.format("%e").should.be.equal(" 1")
+
   describe "#getDate()", ->
     it "delegates to native Date class", ->
       (new DateSupport).getDate().should.equal (new Date).getDate()
