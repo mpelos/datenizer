@@ -24,7 +24,11 @@
   $.fn.datenizer = (options) ->
     this.each ->
       @options = $.extend($.datenizer.defaults, options)
-      initialDate = if $(this).val() then DateSupport.parse($(this).val(), @options.format) else null
+
+      initialDate = if $(this).val()
+                      DateSupport.parse($(this).val(), @options.format)
+                    else
+                      null
 
       @hiddenField = if @options.submitISOFormat
                        $(this).after("<input type='hidden'>").next()
